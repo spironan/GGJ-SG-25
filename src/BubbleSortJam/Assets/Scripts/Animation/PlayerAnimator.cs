@@ -196,29 +196,25 @@ public class PlayerAnimator : MonoBehaviour
         UpdatePositions();
     }
 
-    public void TogglePivot(bool preservePositions)
+    public void TogglePivot()
     {
-        SetPivot(!is1CurrentPivot, preservePositions);
+        SetPivot(!is1CurrentPivot);
     }
 
-    private void SetPivot(bool is1Pivot, bool preservePositions)
+    private void SetPivot(bool is1Pivot)
     {
         is1CurrentPivot = is1Pivot;
         Line.startColor = Line.endColor = Pivot.color;
 
-        if (preservePositions)
-        {
-            NotPivot.transform.localPosition -= Pivot.transform.localPosition;
-            transform.position = Pivot.transform.position;
-            Pivot.transform.localPosition = Vector2.zero;
+        NotPivot.transform.localPosition -= Pivot.transform.localPosition;
+        transform.position = Pivot.transform.position;
+        Pivot.transform.localPosition = Vector2.zero;
 
-            currentRotationAngle += (currentRotationAngle > 180) ? -180 : 180;
-        }
+        currentRotationAngle += (currentRotationAngle > 180) ? -180 : 180;
     }
 
     private void UpdatePositions()
     {
-        Pivot.transform.localPosition = Vector2.zero;
         NotPivot.transform.localPosition = new Vector2(Mathf.Sin(currentRotationAngle * Mathf.Deg2Rad), Mathf.Cos(currentRotationAngle * Mathf.Deg2Rad)) * currentDistance;
 
         Line.SetPosition(0, Pivot.transform.localPosition);
@@ -226,6 +222,51 @@ public class PlayerAnimator : MonoBehaviour
     }
 
     #endregion Transformations
+
+    #region Camera Helpers
+
+    public Bounds GetBoundingBox()
+    {
+        Vector2 min;
+        min.x = (Circle1.bounds.min.x < Circle2.bounds.min.x) ? Circle1.bounds.min.x : Circle2.bounds.min.x;
+        min.y = (Circle1.bounds.min.y < Circle2.bounds.min.y) ? Circle1.bounds.min.y : Circle2.bounds.min.y;
+
+        Vector2 max;
+        max.x = (Circle1.bounds.max.x > Circle2.bounds.max.x) ? Circle1.bounds.max.x : Circle2.bounds.max.x;
+        max.y = (Circle1.bounds.max.y > Circle2.bounds.max.y) ? Circle1.bounds.max.y : Circle2.bounds.max.y;
+
+        return new Bounds((min + max) / 2.0f, max - min);
+    }
+
+    public Vector3 GetTargetPositionFromPresetType()
+    {
+        if (currentAnimation == null)
+        {
+            return Pivot.transform.position;
+        }
+
+        PlayerAnimationPresetType presetType = PlayerAnimationPresetType.Invalid;
+        foreach(PlayerAnimationPreset preset in Presets)
+        {
+            if(preset.Animation == currentAnimation)
+            {
+                presetType = preset.Type;
+                break;
+            }
+        }
+
+        if(presetType == PlayerAnimationPresetType.FinishStart
+            || presetType == PlayerAnimationPresetType.MoveNextStart)
+        {
+            return NotPivot.transform.position;
+        }
+        else
+        {
+            return Pivot.transform.position;
+        }
+    }
+
+    #endregion
 
     #region Helpers
 
@@ -250,7 +291,9 @@ public enum PlayerAnimationPresetType
     FinishStart,
     FinishEnd,
     MoveNextStart,
-    MoveNextEnd
+    MoveNextEnd,
+
+    Invalid,
 }
 
 [System.Serializable]
