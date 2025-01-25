@@ -4,7 +4,8 @@ using UnityEngine;
 public class NumberElementAnimator : MonoBehaviour
 {
     [Header("Components")]
-    [SerializeField] private TextMeshProUGUI numberText;
+    [SerializeField] private TextMeshProUGUI NumberText;
+    [SerializeField] private SpriteRenderer Highlight;
 
     private int value = 0;
 
@@ -16,6 +17,12 @@ public class NumberElementAnimator : MonoBehaviour
 
     private void UpdateVisuals()
     {
-        numberText.text = value.ToString();
+        NumberText.text = value.ToString();
+    }
+
+    private void SetColor(Color color)
+    {
+        Highlight.color = color;
+        NumberText.color = color;
     }
 }

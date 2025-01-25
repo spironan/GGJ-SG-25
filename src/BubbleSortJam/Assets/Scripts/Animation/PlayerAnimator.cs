@@ -7,7 +7,7 @@ public class PlayerAnimator : MonoBehaviour
     [Header("Components")]
     [SerializeField] private SpriteRenderer Circle1;
     [SerializeField] private SpriteRenderer Circle2;
-    [SerializeField] private LineRenderer Line;
+    [SerializeField] private SpriteRenderer Line;
 
     [Header("Animations")]
     [SerializeField] private List<PlayerAnimationPreset> Presets = new List<PlayerAnimationPreset>();
@@ -217,8 +217,11 @@ public class PlayerAnimator : MonoBehaviour
         Pivot.transform.localPosition = Vector2.zero;
         NotPivot.transform.localPosition = new Vector2(Mathf.Sin(currentRotationAngle * Mathf.Deg2Rad), Mathf.Cos(currentRotationAngle * Mathf.Deg2Rad)) * currentDistance;
 
-        Line.SetPosition(0, Pivot.transform.localPosition);
-        Line.SetPosition(1, NotPivot.transform.localPosition);
+        //Line.SetPosition(0, Pivot.transform.localPosition);
+        //Line.SetPosition(1, NotPivot.transform.localPosition);
+        Line.transform.localPosition = NotPivot.transform.localPosition / 2.0f;
+        Line.transform.localScale = new Vector3(Line.transform.localScale.x, currentDistance, Line.transform.localScale.z);
+        Line.transform.localEulerAngles = new Vector3(0, 0, -currentRotationAngle);
     }
 
     public void TogglePivot()
@@ -229,13 +232,15 @@ public class PlayerAnimator : MonoBehaviour
     private void SetPivot(bool is1Pivot)
     {
         is1CurrentPivot = is1Pivot;
-        Line.startColor = Line.endColor = Pivot.color;
+        Line.color = Pivot.color;
 
         transform.localPosition += Pivot.transform.localPosition;
         NotPivot.transform.localPosition -= Pivot.transform.localPosition;
         Pivot.transform.localPosition = Vector2.zero;
 
         currentRotationAngle += (currentRotationAngle > 180) ? -180 : 180;
+
+        UpdateVisuals();
     }
 
     #endregion Transformations
