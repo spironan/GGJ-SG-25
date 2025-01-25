@@ -4,10 +4,6 @@ using UnityEngine.Events;
 
 public class PlayerAnimator : MonoBehaviour
 {
-    [Header("Gameplay Variables")]
-    [SerializeField] private Vector2 GameplayDistanceToTravel;
-    [SerializeField] private float GameplayBPM;
-
     [Header("Components")]
     [SerializeField] private SpriteRenderer Circle1;
     [SerializeField] private SpriteRenderer Circle2;
@@ -27,11 +23,8 @@ public class PlayerAnimator : MonoBehaviour
 
     private float currentDistanceTravelled = 0.0f;
 
-    private void Start()
-    {
-        SetGameplayDistanceToTravel(GameplayDistanceToTravel);
-        SetGameplayBPM(GameplayBPM);
-    }
+    private Vector2 gameplayDistanceToTravel;
+    private float gameplayDuration;
 
     private void Update()
     {
@@ -42,8 +35,9 @@ public class PlayerAnimator : MonoBehaviour
 
     #region Gameplay Logic
 
-    private void SetGameplayDistanceToTravel(Vector2 travelDistances)
+    public void SetGameplayDistanceToTravel(Vector2 travelDistances)
     {
+        gameplayDistanceToTravel = travelDistances;
         {
             PlayerAnimationProperty property = GetAnimationFromPreset(PlayerAnimationPresetType.Start).FindProperty(PlayerAnimationPropertyType.Distance);
             property.EndValue = travelDistances.x;
@@ -58,14 +52,14 @@ public class PlayerAnimator : MonoBehaviour
         }
     }
 
-    private void SetGameplayBPM(float bpm)
+    public void SetGameplayBPM(float bpm)
     {
         float bps = bpm / 60.0f;
-        float duration = 1.0f / bps;
+        gameplayDuration = 1.0f / bps;
 
         foreach(PlayerAnimationPreset preset in Presets)
         {
-            preset.Animation.Duration = duration;
+            preset.Animation.Duration = gameplayDuration;
         }
     }
 
@@ -90,6 +84,8 @@ public class PlayerAnimator : MonoBehaviour
         {
             PlayerAnimationProperty property = GetAnimationFromPreset(PlayerAnimationPresetType.FinishStart).FindProperty(PlayerAnimationPropertyType.Distance);
             property.EndValue = currentDistanceTravelled;
+
+            GetAnimationFromPreset(PlayerAnimationPresetType.FinishStart).Duration = (currentDistanceTravelled > gameplayDistanceToTravel.x) ? gameplayDuration : 0.0f;
         }
         {
             PlayerAnimationProperty property = GetAnimationFromPreset(PlayerAnimationPresetType.FinishEnd).FindProperty(PlayerAnimationPropertyType.Distance);
@@ -160,21 +156,27 @@ public class PlayerAnimator : MonoBehaviour
         }
 
         currentAnimationElapsed += deltaTime;
-        bool isDone = currentAnimationElapsed >= currentAnimation.Duration;
 
-        ApplyAnimation(currentAnimation, (isDone ? currentAnimation.Duration : currentAnimationElapsed));
-
-        if(isDone)
+        if(currentAnimationElapsed >= currentAnimation.Duration)
         {
+            foreach (PlayerAnimationProperty property in currentAnimation.Properties)
+            {
+                SetAnimationPropertyValue(property.Type, property.EndValue);
+            }
+
             currentAnimation.OnFinished?.Invoke();
             currentAnimation = null;
             currentAnimationElapsed = 0.0f;
+        }
+        else
+        {
+            ApplyAnimation(currentAnimation, currentAnimationElapsed);
         }
     }
 
     private void ApplyAnimation(PlayerAnimation animation, float elapsedTime)
     {
-        float t = elapsedTime / animation.Duration;
+        float t = (animation.Duration > 0) ? (elapsedTime / animation.Duration) : 1.0f;
         foreach(PlayerAnimationProperty property in animation.Properties)
         {
             ApplyAnimationProperty(property, t);
@@ -184,14 +186,18 @@ public class PlayerAnimator : MonoBehaviour
     private void ApplyAnimationProperty(PlayerAnimationProperty property, float t)
     {
         float currentValue = Mathf.Lerp(property.StartValue, property.EndValue, property.curve.Evaluate(t));
+        SetAnimationPropertyValue(property.Type, currentValue);
+    }
 
-        switch(property.Type)
+    private void SetAnimationPropertyValue(PlayerAnimationPropertyType type, float value)
+    {
+        switch (type)
         {
             case PlayerAnimationPropertyType.Distance:
-                currentDistance = currentValue;
+                currentDistance = value;
                 break;
             case PlayerAnimationPropertyType.Angle:
-                currentRotationAngle = currentValue;
+                currentRotationAngle = value;
                 break;
         }
     }
@@ -206,7 +212,12 @@ public class PlayerAnimator : MonoBehaviour
         {
             return;
         }
-        UpdatePositions();
+
+        Pivot.transform.localPosition = Vector2.zero;
+        NotPivot.transform.localPosition = new Vector2(Mathf.Sin(currentRotationAngle * Mathf.Deg2Rad), Mathf.Cos(currentRotationAngle * Mathf.Deg2Rad)) * currentDistance;
+
+        Line.SetPosition(0, Pivot.transform.localPosition);
+        Line.SetPosition(1, NotPivot.transform.localPosition);
     }
 
     public void TogglePivot()
@@ -219,19 +230,11 @@ public class PlayerAnimator : MonoBehaviour
         is1CurrentPivot = is1Pivot;
         Line.startColor = Line.endColor = Pivot.color;
 
+        transform.localPosition += Pivot.transform.localPosition;
         NotPivot.transform.localPosition -= Pivot.transform.localPosition;
-        transform.position = Pivot.transform.position;
         Pivot.transform.localPosition = Vector2.zero;
 
         currentRotationAngle += (currentRotationAngle > 180) ? -180 : 180;
-    }
-
-    private void UpdatePositions()
-    {
-        NotPivot.transform.localPosition = new Vector2(Mathf.Sin(currentRotationAngle * Mathf.Deg2Rad), Mathf.Cos(currentRotationAngle * Mathf.Deg2Rad)) * currentDistance;
-
-        Line.SetPosition(0, Pivot.transform.localPosition);
-        Line.SetPosition(1, NotPivot.transform.localPosition);
     }
 
     #endregion Transformations
