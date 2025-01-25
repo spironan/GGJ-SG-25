@@ -26,6 +26,12 @@ public class Player : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            if(!GameManager.instance.HasStartedGame())
+            {
+                GameManager.instance.StartGame();
+                return;
+            }
+
             if (BpmTracker.instance.BeatWindow)
             {
                 Debug.Log("attempting to swap");

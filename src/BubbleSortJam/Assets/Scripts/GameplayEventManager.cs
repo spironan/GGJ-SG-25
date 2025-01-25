@@ -77,6 +77,28 @@ public class ArrayCreatedGameplayEvent : BaseGameplayEvent
     }
 }
 
+public class GameStartGameplayEvent : BaseGameplayEvent
+{
+    public static void BroadcastEvent()
+    {
+        GameStartGameplayEvent ev = new GameStartGameplayEvent();
+        GameplayEventManager.BroadcastEvent(ev);
+    }
+}
+
+public class GameEndGameplayEvent : BaseGameplayEvent
+{
+    private bool isWin;
+    public bool IsWin { get { return isWin; } }
+
+    public static void BroadcastEvent(bool isWin)
+    {
+        GameEndGameplayEvent ev = new GameEndGameplayEvent();
+        ev.isWin = isWin;
+        GameplayEventManager.BroadcastEvent(ev);
+    }
+}
+
 public class StartIterationGameplayEvent : BaseGameplayEvent
 {
     private int unsortedCount = 0;

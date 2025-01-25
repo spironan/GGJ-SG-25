@@ -41,6 +41,7 @@ public class GameManager : MonoBehaviour
     private string levelLoadPath;
     private List<StageData> levelData = new List<StageData>();
 
+    private bool hasStartedGame = false;
     private int currentStage = 0;
     [SerializeField]
     private List<int> currentArray = new List<int>();
@@ -137,12 +138,26 @@ public class GameManager : MonoBehaviour
         // Start Level
         LoadStage();
 
-        StartIterationGameplayEvent.BroadcastEvent(playData.stageSize - playData.currentIteration + 1);
-
         player.GetComponent<Life>().OnDeath += ResetAll;
 
         // engage bpm tracker increment bpm
         BpmTracker.instance.OnWindowClose += OnBeatIncrement;
+    }
+
+    public bool HasStartedGame()
+    {
+        return hasStartedGame;
+    }
+
+    public void StartGame()
+    {
+        hasStartedGame = true;
+
+        MasterAudioController.instance.OnGameStart();
+        BpmTracker.instance.OnStart();
+
+        GameStartGameplayEvent.BroadcastEvent();
+        StartIterationGameplayEvent.BroadcastEvent(playData.stageSize - playData.currentIteration + 1);
     }
 
     private void OnBeatIncrement()

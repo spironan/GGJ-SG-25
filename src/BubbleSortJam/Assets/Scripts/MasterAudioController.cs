@@ -32,6 +32,19 @@ public class MasterAudioController : MonoBehaviour
         }
     }
 
+    public void OnGameStart()
+    {
+        foreach(AudioSource audioSource in GetComponentsInChildren<AudioSource>())
+        {
+            if(audioSource.gameObject == sfxSource)
+            {
+                continue;
+            }
+
+            audioSource.Play();
+        }
+    }
+
     void PrepareTracks(uint layers = 5)
     {
         

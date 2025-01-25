@@ -34,6 +34,10 @@ public class AnimationManager : MonoBehaviour
         }
 
         eventListener = new GameplayEventListener();
+
+        eventListener.AddCallback(typeof(GameStartGameplayEvent), OnGameStart);
+        eventListener.AddCallback(typeof(GameEndGameplayEvent), OnGameEnd);
+
         eventListener.AddCallback(typeof(ArrayCreatedGameplayEvent), OnArrayCreated);
         eventListener.AddCallback(typeof(StartIterationGameplayEvent), OnIterationStart);
         eventListener.AddCallback(typeof(StageCompleteGameplayEvent), OnStageCompleted);
@@ -50,7 +54,6 @@ public class AnimationManager : MonoBehaviour
     private void Start()
     {
         Player.SetGameplayDistanceToTravel(new Vector2(GridSlotSize.x, GridSlotSize.y * 2));
-        Player.SetGameplayBPM(GameplayBPM);
     }
 
     public NumberArrayAnimator CreateNumberArray(List<int> values)
@@ -65,6 +68,16 @@ public class AnimationManager : MonoBehaviour
 
         numberArrays.Add(array);
         return array;
+    }
+
+    private void OnGameStart(BaseGameplayEvent baseEvent)
+    {
+    }
+
+    private void OnGameEnd(BaseGameplayEvent baseEvent)
+    {
+        GameEndGameplayEvent usableEvent = (GameEndGameplayEvent)baseEvent;
+
     }
 
     private void OnArrayCreated(BaseGameplayEvent baseEvent)

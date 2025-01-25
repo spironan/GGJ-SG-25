@@ -30,7 +30,7 @@ public class BpmTracker : MonoBehaviour
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public void OnStart()
     {
         Debug.Log("BPM set to " + BPM);
         timePerBeatMS = 60.0f / BPM;
