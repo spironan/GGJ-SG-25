@@ -163,3 +163,16 @@ public class LifeChangedGameplayEvent : BaseGameplayEvent
         GameplayEventManager.BroadcastEvent(ev);
     }
 }
+
+public class BeatLeniencyGameplayEvent : BaseGameplayEvent
+{
+    private bool isOpen;
+    public bool IsOpen { get { return isOpen; } }
+
+    public static void BroadcastEvent(bool isOpen)
+    {
+        BeatLeniencyGameplayEvent ev = new BeatLeniencyGameplayEvent();
+        ev.isOpen = isOpen;
+        GameplayEventManager.BroadcastEvent(ev);
+    }
+}

@@ -71,6 +71,7 @@ public class BpmTracker : MonoBehaviour
     {
         BeatWindow = true;
         OnWindowOpen?.Invoke();
+        BeatLeniencyGameplayEvent.BroadcastEvent(true);
         //Debug.Log("Beat Window turn on");
     }
 
@@ -78,6 +79,7 @@ public class BpmTracker : MonoBehaviour
     {
         BeatWindow = false;
         OnWindowClose?.Invoke();
+        BeatLeniencyGameplayEvent.BroadcastEvent(false);
         //Debug.Log("Beat Window turn offed");
     }
 

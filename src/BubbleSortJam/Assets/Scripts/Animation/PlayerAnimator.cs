@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.Events;
+using UnityEditor.Presets;
 
 public class PlayerAnimator : MonoBehaviour
 {
@@ -208,6 +209,29 @@ public class PlayerAnimator : MonoBehaviour
 
     #region Extra Animations
 
+    public void PlayLeniencyWindowActivated()
+    {
+        PlayerAnimationPresetType presetType = GetCurrentAnimationPresetType();
+
+        if (presetType == PlayerAnimationPresetType.MoveClockwise
+            || presetType == PlayerAnimationPresetType.MoveAntiClockwise)
+        {
+            NotPivot.GetComponent<TweenScript>().Play("LeniencyWindowOn");
+        }
+    }
+
+    public void PlayLeniencyWindowDeactivated()
+    {
+        if(Pivot.transform.localScale.x > 1.0f)
+        {
+            Pivot.GetComponent<TweenScript>().Play("LeniencyWindowOff");
+        }
+        if (NotPivot.transform.localScale.x > 1.0f)
+        {
+            NotPivot.GetComponent<TweenScript>().Play("LeniencyWindowOff");
+        }
+    }
+
     public void PlayDeathAnimation()
     {
         if(Circle1 != null)
@@ -289,6 +313,20 @@ public class PlayerAnimator : MonoBehaviour
         return new Bounds((min + max) / 2.0f, max - min);
     }
 
+    public PlayerAnimationPresetType GetCurrentAnimationPresetType()
+    {
+        PlayerAnimationPresetType presetType = PlayerAnimationPresetType.Invalid;
+        foreach (PlayerAnimationPreset preset in Presets)
+        {
+            if (preset.Animation == currentAnimation)
+            {
+                presetType = preset.Type;
+                break;
+            }
+        }
+        return presetType;
+    }
+
     public Vector3 GetTargetPositionFromPresetType()
     {
         if (currentAnimation == null)
@@ -296,15 +334,7 @@ public class PlayerAnimator : MonoBehaviour
             return Pivot.transform.position;
         }
 
-        PlayerAnimationPresetType presetType = PlayerAnimationPresetType.Invalid;
-        foreach(PlayerAnimationPreset preset in Presets)
-        {
-            if(preset.Animation == currentAnimation)
-            {
-                presetType = preset.Type;
-                break;
-            }
-        }
+        PlayerAnimationPresetType presetType = GetCurrentAnimationPresetType();
 
         if(presetType == PlayerAnimationPresetType.FinishStart
             || presetType == PlayerAnimationPresetType.MoveNextStart)

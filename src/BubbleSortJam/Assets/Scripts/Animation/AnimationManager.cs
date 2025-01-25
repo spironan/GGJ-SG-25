@@ -45,6 +45,8 @@ public class AnimationManager : MonoBehaviour
         eventListener.AddCallback(typeof(BPMChangedGameplayEvent), OnBPMChanged);
 
         eventListener.AddCallback(typeof(SwapElementGameplayEvent), OnElementSwapped);
+
+        eventListener.AddCallback(typeof(BeatLeniencyGameplayEvent), OnBeatLeniencyChanged);
     }
 
     private void OnDestroy()
@@ -135,6 +137,19 @@ public class AnimationManager : MonoBehaviour
 
         NumberArrayAnimator numberArrayAnimator = numberArrays[usableEvent.StageIndex];
         numberArrayAnimator.PlaySwapAnimation(usableEvent.ElementIndex);
+    }
+
+    private void OnBeatLeniencyChanged(BaseGameplayEvent baseEvent)
+    {
+        BeatLeniencyGameplayEvent usableEvent = (BeatLeniencyGameplayEvent)baseEvent;
+        if(usableEvent.IsOpen)
+        {
+            Player.PlayLeniencyWindowActivated();
+        }
+        else
+        {
+            Player.PlayLeniencyWindowDeactivated();
+        }
     }
 }
 
