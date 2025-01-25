@@ -150,3 +150,16 @@ public class SwapElementGameplayEvent : BaseGameplayEvent
         GameplayEventManager.BroadcastEvent(ev);
     }
 }
+
+public class LifeChangedGameplayEvent : BaseGameplayEvent
+{
+    private int currentHealth;
+    public int CurrentHealth { get { return currentHealth; } }
+
+    public static void BroadcastEvent(int currentHealth)
+    {
+        LifeChangedGameplayEvent ev = new LifeChangedGameplayEvent();
+        ev.currentHealth = currentHealth;
+        GameplayEventManager.BroadcastEvent(ev);
+    }
+}

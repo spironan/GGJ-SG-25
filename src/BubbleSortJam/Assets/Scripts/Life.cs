@@ -18,6 +18,7 @@ public class Life : MonoBehaviour
     public void TakeDamage(int damage)
     {
         currentTotal -= damage;
+        LifeChangedGameplayEvent.BroadcastEvent(currentTotal);
         if (currentTotal < 0)
         {
             // on death event
@@ -29,5 +30,6 @@ public class Life : MonoBehaviour
     public void ResetLife()
     {
         currentTotal = HealthTotal;
+        LifeChangedGameplayEvent.BroadcastEvent(currentTotal);
     }
 }
