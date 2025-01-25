@@ -39,6 +39,8 @@ public class Player : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            // Make sure the player passes the Rhythm??? check - few frames of lineancy?
+
             bool success = GameManager.instance.AttemptSwap(currentId, currentId + 1);
             Debug.Log("Succeeded swapping? " + success);
         }
