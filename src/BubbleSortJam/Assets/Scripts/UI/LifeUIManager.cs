@@ -11,6 +11,7 @@ public class LifeUIManager : MonoBehaviour
     private void Awake()
     {
         iconTemplate = transform.GetChild(0).gameObject;
+        iconList.Add(iconTemplate.GetComponent<LifeUIIcon>());
 
         eventListener.Activate();
         eventListener.AddCallback(typeof(LifeChangedGameplayEvent), OnLifeChanged);
