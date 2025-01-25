@@ -76,3 +76,55 @@ public class ArrayCreatedGameplayEvent : BaseGameplayEvent
         GameplayEventManager.BroadcastEvent(ev);
     }
 }
+
+public class StartIterationGameplayEvent : BaseGameplayEvent
+{
+    private int unsortedCount = 0;
+    public int UnsortedCount { get { return unsortedCount; } }
+
+    public static void BroadcastEvent(int unsortedCount)
+    {
+        StartIterationGameplayEvent ev = new StartIterationGameplayEvent();
+        ev.unsortedCount = unsortedCount;
+        GameplayEventManager.BroadcastEvent(ev);
+    }
+}
+
+public class StageCompleteGameplayEvent : BaseGameplayEvent
+{
+    public static void BroadcastEvent()
+    {
+        StageCompleteGameplayEvent ev = new StageCompleteGameplayEvent();
+        GameplayEventManager.BroadcastEvent(ev);
+    }
+}
+
+public class BPMChangedGameplayEvent : BaseGameplayEvent
+{
+    private float bpm;
+    public float BPM { get { return bpm; } }
+
+    public static void BroadcastEvent(float bpm)
+    {
+        BPMChangedGameplayEvent ev = new BPMChangedGameplayEvent();
+        ev.bpm = bpm;
+        GameplayEventManager.BroadcastEvent(ev);
+    }
+}
+
+public class SwapElementGameplayEvent : BaseGameplayEvent
+{
+    private int stageIndex;
+    private int elementIndex;
+
+    public int StageIndex {  get { return stageIndex; } }
+    public int ElementIndex { get { return elementIndex; } }
+
+    public static void BroadcastEvent(int stageIndex, int elementIndex)
+    {
+        SwapElementGameplayEvent ev = new SwapElementGameplayEvent();
+        ev.stageIndex = stageIndex;
+        ev.elementIndex = elementIndex;
+        GameplayEventManager.BroadcastEvent(ev);
+    }
+}

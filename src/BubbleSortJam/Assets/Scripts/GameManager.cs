@@ -23,6 +23,8 @@ public class PlayData
     public int stageSize;
     public int currentIteration;
     public int currentIndex;
+
+    public int startBeatsToIgnoreLeft;
 };
 
 public class GameManager : MonoBehaviour
@@ -135,6 +137,8 @@ public class GameManager : MonoBehaviour
         // Start Level
         LoadStage();
 
+        StartIterationGameplayEvent.BroadcastEvent(playData.stageSize - playData.currentIteration + 1);
+
         player.GetComponent<Life>().OnDeath += ResetAll;
 
         // engage bpm tracker increment bpm
@@ -143,6 +147,12 @@ public class GameManager : MonoBehaviour
 
     private void OnBeatIncrement()
     {
+        if(playData.startBeatsToIgnoreLeft > 0)
+        {
+            playData.startBeatsToIgnoreLeft--;
+            return;
+        }
+
         if(SwapIsNeeded())
         {
             Debug.Log("Player should have swapped!");
@@ -154,6 +164,8 @@ public class GameManager : MonoBehaviour
             // this should always pass
             AttemptSwap();
         }
+
+        Debug.Log("iteration " + playData.currentIteration + " index " + (playData.currentIndex + 1));
 
         if (++playData.currentIndex >= playData.stageSize - playData.currentIteration)
         {
@@ -170,6 +182,11 @@ public class GameManager : MonoBehaviour
             {
                 NextStage();
             }
+            else
+            {
+                StartIterationGameplayEvent.BroadcastEvent(playData.stageSize - playData.currentIteration + 1);
+                playData.startBeatsToIgnoreLeft = 3;
+            }
         }
     }
 
@@ -177,7 +194,7 @@ public class GameManager : MonoBehaviour
     {
         int i = playData.currentIndex;
         int j = playData.currentIndex + 1;
-        Debug.Log(i + ", " + j);
+        Debug.Log("swap needed between " +  i + ", " + j);
         return (i < currentArray.Count && currentArray[i] > currentArray[j]);
     }
 
@@ -185,10 +202,10 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         // testing code
-        if (Input.GetKeyDown(KeyCode.F1))
-        {
-            NextStage();
-        }
+        //if (Input.GetKeyDown(KeyCode.F1))
+        //{
+        //    NextStage();
+        //}
     }
 
     public bool AttemptSwap()
@@ -216,6 +233,7 @@ public class GameManager : MonoBehaviour
         if (result)
         {
             OnSuccessfulSwap?.Invoke();
+            SwapElementGameplayEvent.BroadcastEvent(currentStage, playData.currentIndex);
         }
         else
         {
@@ -236,6 +254,9 @@ public class GameManager : MonoBehaviour
         else
         {
             LoadStage();
+            playData.startBeatsToIgnoreLeft = 5;
+            StageCompleteGameplayEvent.BroadcastEvent();
+            StartIterationGameplayEvent.BroadcastEvent(playData.stageSize - playData.currentIteration + 1);
         }
 
         Debug.Log("Current Stage is now " + currentStage);
@@ -250,6 +271,7 @@ public class GameManager : MonoBehaviour
         playData.currentIndex = 0;
         playData.currentIteration = 1;
         playData.stageSize = levelData[currentStage].arraySize;
+        playData.startBeatsToIgnoreLeft = 1;
     }
 
     private SortData GenerateArray(int size, int swaps)

@@ -60,6 +60,7 @@ public class PlayerAnimator : MonoBehaviour
         {
             preset.Animation.Duration = gameplayDuration;
         }
+        Debug.Log("Animation BPM set to " + bpm);
     }
 
     public void AddDistanceTravelled()

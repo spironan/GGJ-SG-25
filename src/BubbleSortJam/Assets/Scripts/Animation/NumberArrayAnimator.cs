@@ -17,6 +17,24 @@ public class NumberArrayAnimator : MonoBehaviour
         }
     }
 
+    public void PlaySwapAnimation(int elementIndex)
+    {
+        if(elementIndex < 0 || elementIndex + 1 >= elements.Count)
+        {
+            Debug.LogError("Invalid Element Index");
+            return;
+        }
+
+        NumberElementAnimator lhs = elements[elementIndex];
+        NumberElementAnimator rhs = elements[elementIndex + 1];
+
+        int lhsValue = lhs.GetValue();
+        int rhsValue = rhs.GetValue();
+
+        lhs.PlaySwapAnimation(true, rhsValue);
+        rhs.PlaySwapAnimation(false, lhsValue);
+    }
+
     private NumberElementAnimator CreateElement(int value)
     {
         NumberElementAnimator element = Instantiate(elementPrefab).GetComponent<NumberElementAnimator>();

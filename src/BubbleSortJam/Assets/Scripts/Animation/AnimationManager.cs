@@ -35,6 +35,11 @@ public class AnimationManager : MonoBehaviour
 
         eventListener = new GameplayEventListener();
         eventListener.AddCallback(typeof(ArrayCreatedGameplayEvent), OnArrayCreated);
+        eventListener.AddCallback(typeof(StartIterationGameplayEvent), OnIterationStart);
+        eventListener.AddCallback(typeof(StageCompleteGameplayEvent), OnStageCompleted);
+        eventListener.AddCallback(typeof(BPMChangedGameplayEvent), OnBPMChanged);
+
+        eventListener.AddCallback(typeof(SwapElementGameplayEvent), OnElementSwapped);
     }
 
     private void OnDestroy()
@@ -48,7 +53,7 @@ public class AnimationManager : MonoBehaviour
         Player.SetGameplayBPM(GameplayBPM);
     }
 
-    public void CreateNumberArray(List<int> values)
+    public NumberArrayAnimator CreateNumberArray(List<int> values)
     {
         NumberArrayAnimator array = Instantiate(numberArrayPrefab).GetComponent<NumberArrayAnimator>();
         array.name = "ArrayAnimator_" + numberArrays.Count;
@@ -59,6 +64,7 @@ public class AnimationManager : MonoBehaviour
         array.Initialize(values, GridSlotSize.x);
 
         numberArrays.Add(array);
+        return array;
     }
 
     private void OnArrayCreated(BaseGameplayEvent baseEvent)
@@ -66,4 +72,54 @@ public class AnimationManager : MonoBehaviour
         ArrayCreatedGameplayEvent usableEvent = (ArrayCreatedGameplayEvent)baseEvent;
         CreateNumberArray(usableEvent.Values);
     }
+
+    private void OnIterationStart(BaseGameplayEvent baseEvent)
+    {
+        StartIterationGameplayEvent usableEvent = (StartIterationGameplayEvent)baseEvent;
+
+        Player.QueueAnimation(PlayerAnimationPresetType.Start);
+
+        for (int i = 0; i < usableEvent.UnsortedCount - 1; ++i)
+        {
+            Player.QueueAnimation(PlayerAnimationPresetType.MoveClockwise);
+        }
+
+        Player.QueueAnimation(PlayerAnimationPresetType.FinishStart);
+        Player.QueueAnimation(PlayerAnimationPresetType.FinishEnd);
+    }
+
+    private void OnStageCompleted(BaseGameplayEvent baseEvent)
+    {
+        Player.QueueAnimation(PlayerAnimationPresetType.MoveNextStart);
+        Player.QueueAnimation(PlayerAnimationPresetType.MoveNextEnd);
+    }
+
+    private void OnBPMChanged(BaseGameplayEvent baseEvent)
+    {
+        BPMChangedGameplayEvent usableEvent = (BPMChangedGameplayEvent)baseEvent;
+        Player.SetGameplayBPM(usableEvent.BPM);
+    }
+
+    private void OnElementSwapped(BaseGameplayEvent baseEvent)
+    {
+        SwapElementGameplayEvent usableEvent = (SwapElementGameplayEvent)baseEvent;
+
+        if(usableEvent.StageIndex < 0 && usableEvent.StageIndex >= numberArrays.Count)
+        {
+            Debug.LogError("Invalid Stage Index");
+            return;
+        }
+
+        NumberArrayAnimator numberArrayAnimator = numberArrays[usableEvent.StageIndex];
+        numberArrayAnimator.PlaySwapAnimation(usableEvent.ElementIndex);
+    }
+}
+
+[System.Serializable]
+public class SimpleAnimationData
+{
+    public AnimationCurve Curve;
+    public float StartValue;
+    public float EndValue;
+    public float Duration;
 }

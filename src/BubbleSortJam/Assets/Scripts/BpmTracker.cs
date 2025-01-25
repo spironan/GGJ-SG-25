@@ -41,6 +41,8 @@ public class BpmTracker : MonoBehaviour
         InvokeRepeating("ToggleWindowOff", timePerBeatMS + (timeLineacy * 0.5f), timePerBeatMS);
 
         OnMeasure += HardCodeAudioPlayTimes;
+
+        BPMChangedGameplayEvent.BroadcastEvent(BPM);
     }
 
     private void IncrementBPM()

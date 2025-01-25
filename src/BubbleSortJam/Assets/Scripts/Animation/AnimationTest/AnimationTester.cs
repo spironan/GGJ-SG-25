@@ -16,7 +16,7 @@ public class AnimationTester : MonoBehaviour
     {
         foreach(AnimationTesterData data in DebugData)
         {
-            manager.CreateNumberArray(data.Array);
+            manager.CreateNumberArray(data.Array).PlaySwapAnimation(1);
             for(int unsortedCount = data.Array.Count; unsortedCount > 1; --unsortedCount)
             {
                 manager.Player.QueueAnimation(PlayerAnimationPresetType.Start);
