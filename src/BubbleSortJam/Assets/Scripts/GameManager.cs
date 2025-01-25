@@ -2,7 +2,9 @@ using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [System.Serializable]
 public class SortData
@@ -28,13 +30,21 @@ public class GameManager : MonoBehaviour
     public event Action OnCompleteRow;
     public event Action OnCompleteAll;
 
+    [SerializeField]
+    private GameObject player;
+
+    [SerializeField]
+    private GameObject arrayParentGO;
+    [SerializeField]
+    private GameObject arrayElementGO;
+
     private void Awake()
     {
         if (instance == null)
         {
             instance = this;
         }
-        DontDestroyOnLoad(gameObject);
+        // DontDestroyOnLoad(gameObject);
     }
 
     void LoadDataFromCSV(string filePath)
@@ -77,6 +87,8 @@ public class GameManager : MonoBehaviour
         // Load all Possible Arrays
         LoadDataFromCSV(loadPath);
         GenerateArray(10, 10);
+        GenerateArrayGO();
+        player.GetComponent<Life>().OnDeath += ResetAll;
     }
 
     // Update is called once per frame
@@ -95,6 +107,21 @@ public class GameManager : MonoBehaviour
         currentArray = result.pattern;
 
         return result;
+    }
+
+    public void GenerateArrayGO()
+    {
+        var parent = Instantiate(arrayParentGO);
+        parent.transform.position = new Vector3(0, 0, 0);
+
+        int count = 0;
+        foreach (var element in currentArray)
+        {
+            var elem = Instantiate(arrayElementGO);
+            elem.transform.position = new Vector3(count++, 0, 0);
+            elem.transform.SetParent(parent.transform);
+            elem.GetComponentInChildren<TextMeshProUGUI>().text = element.ToString();
+        }
     }
 
     public bool AttemptSwap(int i, int j)
@@ -137,5 +164,8 @@ public class GameManager : MonoBehaviour
         Debug.Log("values " + outputVals);
     }
 
-
+    private void ResetAll()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
 }

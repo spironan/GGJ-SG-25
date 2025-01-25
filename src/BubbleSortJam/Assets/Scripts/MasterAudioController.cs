@@ -13,7 +13,7 @@ public class MasterAudioController : MonoBehaviour
         {
             instance = this;
         }
-        DontDestroyOnLoad(gameObject);
+        // DontDestroyOnLoad(gameObject);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -37,10 +37,14 @@ public class MasterAudioController : MonoBehaviour
 
     }
 
-    public void MuteAllBGM()
+    public void UnmuteBGMLayer(uint layer = 0)
     {
 
     }
 
+    public void MuteAllBGM()
+    {
+
+    }
 
 }

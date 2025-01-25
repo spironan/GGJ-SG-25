@@ -22,6 +22,7 @@ public class Life : MonoBehaviour
         {
             // on death event
             OnDeath?.Invoke();
+            Debug.Log("Player Death");
         }
     }
 
