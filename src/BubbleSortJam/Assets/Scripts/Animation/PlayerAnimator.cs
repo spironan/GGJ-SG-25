@@ -30,7 +30,6 @@ public class PlayerAnimator : MonoBehaviour
     {
         ProcessAnimationQueue();
         ProcessCurrentAnimation(Time.deltaTime);
-        UpdateVisuals();
     }
 
     #region Gameplay Logic
@@ -163,6 +162,7 @@ public class PlayerAnimator : MonoBehaviour
             {
                 SetAnimationPropertyValue(property.Type, property.EndValue);
             }
+            UpdateVisuals();
 
             currentAnimation.OnFinished?.Invoke();
             currentAnimation = null;
@@ -171,6 +171,7 @@ public class PlayerAnimator : MonoBehaviour
         else
         {
             ApplyAnimation(currentAnimation, currentAnimationElapsed);
+            UpdateVisuals();
         }
     }
 
