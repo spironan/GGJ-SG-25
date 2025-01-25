@@ -28,7 +28,7 @@ public class AnimationManager : MonoBehaviour
         {
             instance = this;
         }
-        else if(instance != this)
+        else if (instance != this)
         {
             Destroy(this);
             return;
@@ -47,6 +47,8 @@ public class AnimationManager : MonoBehaviour
         eventListener.AddCallback(typeof(SwapElementGameplayEvent), OnElementSwapped);
 
         eventListener.AddCallback(typeof(BeatLeniencyGameplayEvent), OnBeatLeniencyChanged);
+
+        eventListener.AddCallback(typeof(ArrayElementStateChangedEvent), OnArrayElementStateChanged);
     }
 
     private void OnDestroy()
@@ -82,7 +84,7 @@ public class AnimationManager : MonoBehaviour
         GameEndGameplayEvent usableEvent = (GameEndGameplayEvent)baseEvent;
         Player.StopAllAnimations();
 
-        if(usableEvent.IsWin)
+        if (usableEvent.IsWin)
         {
 
         }
@@ -115,6 +117,13 @@ public class AnimationManager : MonoBehaviour
 
     private void OnStageCompleted(BaseGameplayEvent baseEvent)
     {
+        StageCompleteGameplayEvent usableEvent = (StageCompleteGameplayEvent)baseEvent;
+        if (usableEvent.StageIndex >= 0 && usableEvent.StageIndex < numberArrays.Count)
+        {
+            NumberArrayAnimator numberArrayAnimator = numberArrays[usableEvent.StageIndex];
+            numberArrayAnimator.SetAllElementsState(NumberElementState.Sorted);
+        }
+
         Player.QueueAnimation(PlayerAnimationPresetType.MoveNextStart);
         Player.QueueAnimation(PlayerAnimationPresetType.MoveNextEnd);
     }
@@ -129,7 +138,7 @@ public class AnimationManager : MonoBehaviour
     {
         SwapElementGameplayEvent usableEvent = (SwapElementGameplayEvent)baseEvent;
 
-        if(usableEvent.StageIndex < 0 && usableEvent.StageIndex >= numberArrays.Count)
+        if (usableEvent.StageIndex < 0 || usableEvent.StageIndex >= numberArrays.Count)
         {
             Debug.LogError("Invalid Stage Index");
             return;
@@ -142,7 +151,7 @@ public class AnimationManager : MonoBehaviour
     private void OnBeatLeniencyChanged(BaseGameplayEvent baseEvent)
     {
         BeatLeniencyGameplayEvent usableEvent = (BeatLeniencyGameplayEvent)baseEvent;
-        if(usableEvent.IsOpen)
+        if (usableEvent.IsOpen)
         {
             Player.PlayLeniencyWindowActivated();
         }
@@ -150,6 +159,21 @@ public class AnimationManager : MonoBehaviour
         {
             Player.PlayLeniencyWindowDeactivated();
         }
+    }
+
+    private void OnArrayElementStateChanged(BaseGameplayEvent baseEvent)
+    {
+        ArrayElementStateChangedEvent usableEvent = (ArrayElementStateChangedEvent)baseEvent;
+
+        if (usableEvent.StageIndex < 0 || usableEvent.StageIndex >= numberArrays.Count)
+        {
+            Debug.LogError("Invalid Stage Index");
+            return;
+        }
+
+        NumberArrayAnimator arrayAnimator = numberArrays[usableEvent.StageIndex];
+        NumberElementAnimator numberAnimator = arrayAnimator.FindElement(usableEvent.ElementIndex);
+        numberAnimator.UpdateState(usableEvent.NewState);
     }
 }
 

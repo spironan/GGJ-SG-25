@@ -37,15 +37,24 @@ public class Player : MonoBehaviour
                 return;
             }
 
-            if (BpmTracker.instance.BeatWindow)
+            if (GameManager.instance.BeatWindow)
             {
                 Debug.Log("attempting to swap");
                 bool success = GameManager.instance.AttemptSwap();
                 if (success)
                 {
                     // launch an event here to know its PLAYER action that caused it to be correct.
+                    GameManager.instance.BroadcastCorrectAtCurrent();
+                }
+                else
+                {
+                    GameManager.instance.BroadcastMistakeAtCurrent();
                 }
                 Debug.Log("Succeeded swapping? " + success);
+            }
+            else
+            {
+                // do dmg here?
             }
         }
     }

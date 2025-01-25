@@ -47,6 +47,9 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private List<int> currentArray = new List<int>();
 
+    // takes into account beats that should be ignored because animation
+    public bool BeatWindow { get; private set; } = false;
+
     public event Action OnSuccessfulSwap;
     public event Action OnFailedSwap;
     public event Action OnCompleteRow;
@@ -142,7 +145,8 @@ public class GameManager : MonoBehaviour
         player.GetComponent<Life>().OnDeath += OnPlayerDeath;
 
         // engage bpm tracker increment bpm
-        BpmTracker.instance.OnWindowClose += OnBeatIncrement;
+        BpmTracker.instance.OnWindowOpen += OnBeatWindowOpen;
+        BpmTracker.instance.OnWindowClose += OnBeatWindowClosed;
     }
 
     public bool HasStartedGame()
@@ -175,7 +179,19 @@ public class GameManager : MonoBehaviour
         GameEndGameplayEvent.BroadcastEvent(false);
     }
 
-    private void OnBeatIncrement()
+    private void OnBeatWindowOpen()
+    {
+        if (playData.startBeatsToIgnoreLeft > 0)
+        {
+            return;
+        }
+
+        ArrayElementStateChangedEvent.BroadcastEvent(currentStage, playData.currentIndex, NumberElementState.Involved);
+        ArrayElementStateChangedEvent.BroadcastEvent(currentStage, playData.currentIndex + 1, NumberElementState.Involved);
+        BeatWindow = true;
+    }
+
+    private void OnBeatWindowClosed()
     {
         if(playData.startBeatsToIgnoreLeft > 0)
         {
@@ -183,12 +199,19 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        if(SwapIsNeeded())
+        BeatWindow = false;
+
+        ArrayElementStateChangedEvent.BroadcastEvent(currentStage, playData.currentIndex, NumberElementState.Neutral);
+        ArrayElementStateChangedEvent.BroadcastEvent(currentStage, playData.currentIndex + 1, NumberElementState.Neutral);
+
+        if (SwapIsNeeded())
         {
             Debug.Log("Player should have swapped!");
 
             // player failed to swap.
             OnFailedSwap?.Invoke();
+
+            BroadcastMistakeAtCurrent();
 
             // additionally: we need to help them do it for them
             // this should always pass
@@ -199,10 +222,14 @@ public class GameManager : MonoBehaviour
 
         if (++playData.currentIndex >= playData.stageSize - playData.currentIteration)
         {
+            ArrayElementStateChangedEvent.BroadcastEvent(currentStage, playData.currentIndex, NumberElementState.Sorted);
+            //ArrayElementStateChangedEvent.BroadcastEvent(currentStage, playData.currentIndex - 1, NumberElementState.Neutral);
+
             // increment iteration & reset current index
             playData.currentIndex = 0;
             ++playData.currentIteration;
-            
+
+
             if (StageIsSorted())
             {
                 Debug.Log("Auto proceeding to the next stage");
@@ -217,6 +244,10 @@ public class GameManager : MonoBehaviour
                 StartIterationGameplayEvent.BroadcastEvent(playData.stageSize - playData.currentIteration + 1);
                 playData.startBeatsToIgnoreLeft = 3;
             }
+        }
+        else
+        {
+            //ArrayElementStateChangedEvent.BroadcastEvent(currentStage, playData.currentIndex);
         }
     }
 
@@ -273,6 +304,18 @@ public class GameManager : MonoBehaviour
         return result;
     }
 
+    public void BroadcastMistakeAtCurrent()
+    {
+        ArrayElementStateChangedEvent.BroadcastEvent(currentStage, playData.currentIndex, NumberElementState.Mistake);
+        ArrayElementStateChangedEvent.BroadcastEvent(currentStage, playData.currentIndex + 1, NumberElementState.Mistake);
+    }
+
+    public void BroadcastCorrectAtCurrent()
+    {
+        ArrayElementStateChangedEvent.BroadcastEvent(currentStage, playData.currentIndex, NumberElementState.Correct);
+        ArrayElementStateChangedEvent.BroadcastEvent(currentStage, playData.currentIndex + 1, NumberElementState.Correct);
+    }
+
     private void NextStage()
     {
         if (++currentStage >= levelData.Count)
@@ -289,7 +332,7 @@ public class GameManager : MonoBehaviour
         {
             LoadStage();
             playData.startBeatsToIgnoreLeft = 5;
-            StageCompleteGameplayEvent.BroadcastEvent();
+            StageCompleteGameplayEvent.BroadcastEvent(currentStage - 1);
             StartIterationGameplayEvent.BroadcastEvent(playData.stageSize - playData.currentIteration + 1);
         }
 

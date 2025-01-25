@@ -1,6 +1,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class NumberElementAnimator : MonoBehaviour
 {
@@ -11,6 +12,12 @@ public class NumberElementAnimator : MonoBehaviour
     [Header("Animation Settings")]
     [SerializeField] private SimpleAnimationData SwapStartAnimData;
     [SerializeField] private SimpleAnimationData SwapEndAnimData;
+
+    [SerializeField] private List<NumberElementStateFeedback> StateFeedback;
+    [SerializeField] private SimpleAnimationData StateTransitionAnimData;
+    private Coroutine StateTransitionCoroutine;
+    private NumberElementState PrevState = NumberElementState.Neutral;
+    private NumberElementState CurrentState = NumberElementState.Neutral;
 
     private int value = 0;
 
@@ -23,6 +30,65 @@ public class NumberElementAnimator : MonoBehaviour
     public int GetValue()
     {
         return value;
+    }
+
+    public void UpdateState(NumberElementState state)
+    {
+        if(CurrentState == state)
+        {
+            return;
+        }
+
+        if(CurrentState == NumberElementState.Mistake
+            || CurrentState == NumberElementState.Correct)
+        {
+            PrevState = state;
+            return;
+        }
+
+        if(StateTransitionCoroutine != null)
+        {
+            StopCoroutine(StateTransitionCoroutine);
+        }
+
+        PrevState = CurrentState;
+        CurrentState = state;
+
+        StateTransitionCoroutine = StartCoroutine(StateTransitionAnimationCoroutine());
+    }
+
+    private IEnumerator StateTransitionAnimationCoroutine()
+    {
+        float elapsed = 0.0f;
+        Color startColor = GetColor();
+        Color endColor = Color.white;
+        foreach(NumberElementStateFeedback feedback in StateFeedback)
+        {
+            if(feedback.State == CurrentState)
+            {
+                endColor = feedback.HighlightColor;
+                break;
+            }
+        }
+
+        while(elapsed < StateTransitionAnimData.Duration)
+        {
+            Color currentColor = Color.Lerp(startColor, endColor, SwapStartAnimData.Curve.Evaluate(elapsed / SwapStartAnimData.Duration));
+            SetColor(currentColor);
+
+            yield return null;
+            elapsed += Time.deltaTime;
+        }
+
+        if(CurrentState == NumberElementState.Correct
+            || CurrentState == NumberElementState.Mistake)
+        {
+            NumberElementState temp = CurrentState;
+            CurrentState = PrevState;
+            PrevState = temp;
+
+            StateTransitionCoroutine = StartCoroutine(StateTransitionAnimationCoroutine());
+        }
     }
 
     public void PlaySwapAnimation(bool isLHS, int value) 
@@ -69,4 +135,25 @@ public class NumberElementAnimator : MonoBehaviour
         Highlight.color = color;
         NumberText.color = color;
     }
+
+    private Color GetColor()
+    {
+        return NumberText.color;
+    }
+}
+
+[System.Serializable]
+public struct NumberElementStateFeedback
+{
+    public NumberElementState State;
+    public Color HighlightColor;
+}
+
+public enum NumberElementState
+{
+    Neutral,
+    Sorted,
+    Involved,
+    Mistake,
+    Correct
 }

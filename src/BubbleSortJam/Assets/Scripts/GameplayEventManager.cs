@@ -114,9 +114,13 @@ public class StartIterationGameplayEvent : BaseGameplayEvent
 
 public class StageCompleteGameplayEvent : BaseGameplayEvent
 {
-    public static void BroadcastEvent()
+    private int stageIndex;
+    public int StageIndex { get { return stageIndex; } }
+
+    public static void BroadcastEvent(int stageIndex)
     {
         StageCompleteGameplayEvent ev = new StageCompleteGameplayEvent();
+        ev.stageIndex = stageIndex;
         GameplayEventManager.BroadcastEvent(ev);
     }
 }
@@ -174,5 +178,53 @@ public class BeatLeniencyGameplayEvent : BaseGameplayEvent
         BeatLeniencyGameplayEvent ev = new BeatLeniencyGameplayEvent();
         ev.isOpen = isOpen;
         GameplayEventManager.BroadcastEvent(ev);
+    }
+}
+
+public class ArrayElementStateChangedEvent : BaseGameplayEvent
+{
+    private int stageIndex;
+    private int elementIndex;
+    private NumberElementState newState;
+
+    public int StageIndex { get { return stageIndex; } }
+    public int ElementIndex { get { return elementIndex; } }
+    public NumberElementState NewState { get { return newState; } }
+
+    public static void BroadcastEvent(int stageIndex, int elementIndex, NumberElementState newState)
+    {
+        ArrayElementStateChangedEvent ev = new ArrayElementStateChangedEvent();
+        ev.stageIndex = stageIndex;
+        ev.elementIndex = elementIndex;
+        ev.newState = newState;
+        GameplayEventManager.BroadcastEvent(ev);
+    }
+
+    public static void BroadcastEvent(int stageIndex, int currentIndex)
+    {
+        //if (currentIndex - 1 >= 0)
+        //{
+        //    ArrayElementStateChangedEvent ev = new ArrayElementStateChangedEvent();
+        //    ev.stageIndex = stageIndex;
+        //    ev.elementIndex = currentIndex - 1;
+        //    ev.newState = NumberElementState.Neutral;
+        //    GameplayEventManager.BroadcastEvent(ev);
+        //}
+
+        {
+            ArrayElementStateChangedEvent ev = new ArrayElementStateChangedEvent();
+            ev.stageIndex = stageIndex;
+            ev.elementIndex = currentIndex;
+            ev.newState = NumberElementState.Involved;
+            GameplayEventManager.BroadcastEvent(ev);
+        }
+
+        {
+            ArrayElementStateChangedEvent ev = new ArrayElementStateChangedEvent();
+            ev.stageIndex = stageIndex;
+            ev.elementIndex = currentIndex + 1;
+            ev.newState = NumberElementState.Involved;
+            GameplayEventManager.BroadcastEvent(ev);
+        }
     }
 }

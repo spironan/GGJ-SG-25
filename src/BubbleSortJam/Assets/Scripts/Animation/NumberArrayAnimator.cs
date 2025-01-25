@@ -35,6 +35,23 @@ public class NumberArrayAnimator : MonoBehaviour
         rhs.PlaySwapAnimation(false, lhsValue);
     }
 
+    public void SetAllElementsState(NumberElementState state)
+    {
+        foreach(NumberElementAnimator element in elements)
+        {
+            element.UpdateState(state);
+        }
+    }
+
+    public NumberElementAnimator FindElement(int elementIndex)
+    {
+        if (elementIndex < 0 || elementIndex >= elements.Count)
+        {
+            return null;
+        }
+        return elements[elementIndex];
+    }
+
     private NumberElementAnimator CreateElement(int value)
     {
         NumberElementAnimator element = Instantiate(elementPrefab).GetComponent<NumberElementAnimator>();
