@@ -31,6 +31,11 @@ public class Player : MonoBehaviour
                 GameManager.instance.StartGame();
                 return;
             }
+            else if(GameManager.instance.HasEndedGame())
+            {
+                GameManager.instance.ResetAll();
+                return;
+            }
 
             if (BpmTracker.instance.BeatWindow)
             {

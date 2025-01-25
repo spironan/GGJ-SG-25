@@ -9,9 +9,11 @@ public class UIManager : MonoBehaviour
     [Header("UI")]
     [SerializeField] public GameObject TitleScreen;
     [SerializeField] public GameObject HUD;
+    [SerializeField] public GameObject WinScreen;
+    [SerializeField] public GameObject LoseScreen;
 
     private List<GameObject> allUI = new List<GameObject>();
-    private GameplayEventListener eventListener = null;
+    private GameplayEventListener eventListener = new GameplayEventListener();
 
     private void Awake()
     {
@@ -27,8 +29,10 @@ public class UIManager : MonoBehaviour
 
         allUI.Add(TitleScreen);
         allUI.Add(HUD);
+        allUI.Add(WinScreen);
+        allUI.Add(LoseScreen);
 
-        eventListener = new GameplayEventListener();
+        eventListener.Activate();
 
         eventListener.AddCallback(typeof(GameStartGameplayEvent), OnGameStart);
         eventListener.AddCallback(typeof(GameEndGameplayEvent), OnGameEnd);
@@ -36,7 +40,7 @@ public class UIManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        eventListener = null;
+        eventListener.Deactivate();
     }
 
     private void Start()
@@ -52,7 +56,14 @@ public class UIManager : MonoBehaviour
     private void OnGameEnd(BaseGameplayEvent baseEvent)
     {
         GameEndGameplayEvent usableEvent = (GameEndGameplayEvent)baseEvent;
-
+        if(usableEvent.IsWin)
+        {
+            SetActiveUI(WinScreen);
+        }
+        else
+        {
+            SetActiveUI(LoseScreen);
+        }
     }
 
     private void SetActiveUI(GameObject targetUI)

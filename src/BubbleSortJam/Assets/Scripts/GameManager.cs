@@ -42,6 +42,7 @@ public class GameManager : MonoBehaviour
     private List<StageData> levelData = new List<StageData>();
 
     private bool hasStartedGame = false;
+    private bool hasEndedGame = false;
     private int currentStage = 0;
     [SerializeField]
     private List<int> currentArray = new List<int>();
@@ -138,7 +139,7 @@ public class GameManager : MonoBehaviour
         // Start Level
         LoadStage();
 
-        player.GetComponent<Life>().OnDeath += ResetAll;
+        player.GetComponent<Life>().OnDeath += OnPlayerDeath;
 
         // engage bpm tracker increment bpm
         BpmTracker.instance.OnWindowClose += OnBeatIncrement;
@@ -149,15 +150,29 @@ public class GameManager : MonoBehaviour
         return hasStartedGame;
     }
 
+    public bool HasEndedGame()
+    {
+        return hasEndedGame;
+    }
+
     public void StartGame()
     {
         hasStartedGame = true;
 
         MasterAudioController.instance.OnGameStart();
-        BpmTracker.instance.OnStart();
+        BpmTracker.instance.OnGameStart();
 
         GameStartGameplayEvent.BroadcastEvent();
         StartIterationGameplayEvent.BroadcastEvent(playData.stageSize - playData.currentIteration + 1);
+    }
+
+    private void OnPlayerDeath()
+    {
+        hasEndedGame = true;
+
+        BpmTracker.instance.OnGameEnd();
+        MasterAudioController.instance.OnGameLost();
+        GameEndGameplayEvent.BroadcastEvent(false);
     }
 
     private void OnBeatIncrement()
@@ -263,7 +278,11 @@ public class GameManager : MonoBehaviour
         if (++currentStage >= levelData.Count)
         {
             // we finished the level! broadcast on game finish event or something
+            hasEndedGame = true;
             LevelIsWon = true;
+
+            BpmTracker.instance.OnGameEnd();
+            GameEndGameplayEvent.BroadcastEvent(true);
             Debug.Log("We have won the game!");
         }
         else
@@ -313,7 +332,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("values " + outputVals);
     }
 
-    private void ResetAll()
+    public void ResetAll()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }

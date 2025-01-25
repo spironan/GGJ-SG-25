@@ -30,12 +30,12 @@ public class GameplayEventListener
     public delegate void CallbackFunc(BaseGameplayEvent ev);
     private Dictionary<System.Type, CallbackFunc> callbacks = new Dictionary<System.Type, CallbackFunc>();
 
-    public GameplayEventListener()
+    public void Activate()
     {
         GameplayEventManager.AddListener(this);
     }
 
-    ~GameplayEventListener()
+    public void Deactivate()
     {
         GameplayEventManager.RemoveListener(this);
     }

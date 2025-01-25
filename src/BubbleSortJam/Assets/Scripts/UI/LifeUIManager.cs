@@ -6,14 +6,19 @@ public class LifeUIManager : MonoBehaviour
     private GameObject iconTemplate = null;
     private List<LifeUIIcon> iconList = new List<LifeUIIcon>();
 
-    private GameplayEventListener eventListener = null;
+    private GameplayEventListener eventListener = new GameplayEventListener();
 
     private void Awake()
     {
         iconTemplate = transform.GetChild(0).gameObject;
 
-        eventListener = new GameplayEventListener();
+        eventListener.Activate();
         eventListener.AddCallback(typeof(LifeChangedGameplayEvent), OnLifeChanged);
+    }
+
+    private void OnDestroy()
+    {
+        eventListener.Deactivate();
     }
 
     private void OnLifeChanged(BaseGameplayEvent baseEvent)

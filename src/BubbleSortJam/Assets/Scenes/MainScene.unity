@@ -407,14 +407,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: AnimationManager
       objectReference: {fileID: 0}
-    - target: {fileID: 2218424454283945230, guid: 511c231dd39fd66419de86bb3a20faef, type: 3}
-      propertyPath: GameplayBPM
-      value: 95
-      objectReference: {fileID: 0}
-    - target: {fileID: 3809862378072741905, guid: 511c231dd39fd66419de86bb3a20faef, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1074,6 +1066,14 @@ PrefabInstance:
     - target: {fileID: 1187317837671307496, guid: eecb2dab49b8c4b4dbdaada96fc74192, type: 3}
       propertyPath: m_Name
       value: UIManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 2076330998285749698, guid: eecb2dab49b8c4b4dbdaada96fc74192, type: 3}
+      propertyPath: m_SortingLayer
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2076330998285749698, guid: eecb2dab49b8c4b4dbdaada96fc74192, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 752398077
       objectReference: {fileID: 0}
     - target: {fileID: 2511507161058956011, guid: eecb2dab49b8c4b4dbdaada96fc74192, type: 3}
       propertyPath: m_Camera

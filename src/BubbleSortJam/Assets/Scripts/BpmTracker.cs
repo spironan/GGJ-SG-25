@@ -29,8 +29,13 @@ public class BpmTracker : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        OnMeasure += HardCodeAudioPlayTimes;
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    public void OnStart()
+    public void OnGameStart()
     {
         Debug.Log("BPM set to " + BPM);
         timePerBeatMS = 60.0f / BPM;
@@ -40,9 +45,12 @@ public class BpmTracker : MonoBehaviour
         // e.g. 950, 1700, 2450
         InvokeRepeating("ToggleWindowOff", timePerBeatMS + (timeLineacy * 0.5f), timePerBeatMS);
 
-        OnMeasure += HardCodeAudioPlayTimes;
-
         BPMChangedGameplayEvent.BroadcastEvent(BPM);
+    }
+
+    public void OnGameEnd()
+    {
+        CancelInvoke();
     }
 
     private void IncrementBPM()

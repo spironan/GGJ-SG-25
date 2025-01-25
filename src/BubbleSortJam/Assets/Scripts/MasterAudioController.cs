@@ -34,15 +34,12 @@ public class MasterAudioController : MonoBehaviour
 
     public void OnGameStart()
     {
-        foreach(AudioSource audioSource in GetComponentsInChildren<AudioSource>())
-        {
-            if(audioSource.gameObject == sfxSource)
-            {
-                continue;
-            }
+        PlayAllBGM();
+    }
 
-            audioSource.Play();
-        }
+    public void OnGameLost()
+    {
+        StopAllBGM();
     }
 
     void PrepareTracks(uint layers = 5)
@@ -58,6 +55,32 @@ public class MasterAudioController : MonoBehaviour
     public void PlayBGM()
     {
 
+    }
+
+    private void PlayAllBGM()
+    {
+        foreach (AudioSource audioSource in GetComponentsInChildren<AudioSource>())
+        {
+            if (audioSource.gameObject == sfxSource)
+            {
+                continue;
+            }
+
+            audioSource.Play();
+        }
+    }
+
+    private void StopAllBGM()
+    {
+        foreach (AudioSource audioSource in GetComponentsInChildren<AudioSource>())
+        {
+            if (audioSource.gameObject == sfxSource)
+            {
+                continue;
+            }
+
+            audioSource.Stop();
+        }
     }
 
     public void UnmuteNextDynamicBGMLayer()

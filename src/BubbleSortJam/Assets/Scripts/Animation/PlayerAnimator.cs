@@ -206,6 +206,34 @@ public class PlayerAnimator : MonoBehaviour
 
     #endregion Animations
 
+    #region Extra Animations
+
+    public void PlayDeathAnimation()
+    {
+        if(Circle1 != null)
+        {
+            Circle1.enabled = false;
+
+            for(int i = 0; i < Circle1.transform.childCount; ++i)
+            {
+                Transform child = Circle1.transform.GetChild(i);
+                child.gameObject.SetActive(child.gameObject.name.StartsWith("Death"));
+            }
+        }
+        if (Circle2 != null)
+        {
+            Circle2.enabled = false;
+
+            for (int i = 0; i < Circle2.transform.childCount; ++i)
+            {
+                Transform child = Circle2.transform.GetChild(i);
+                child.gameObject.SetActive(child.gameObject.name.StartsWith("Death"));
+            }
+        }
+    }
+
+    #endregion Extra Animations
+
     #region Transformations
 
     private void UpdateVisuals()

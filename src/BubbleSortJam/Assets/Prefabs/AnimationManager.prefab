@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GridSlotSize: {x: 2, y: 2}
-  GameplayBPM: 80
+  GameplayBPM: 95
   player: {fileID: 2159433183157634381}
   numberArrayPrefab: {fileID: 1414150730116860531, guid: c247024da0d6e5b49a09e431a85d6738, type: 3}
 --- !u!1001 &4867734931137403846

@@ -20,7 +20,7 @@ public class AnimationManager : MonoBehaviour
 
     private List<NumberArrayAnimator> numberArrays = new List<NumberArrayAnimator>();
 
-    private GameplayEventListener eventListener = null;
+    private GameplayEventListener eventListener = new GameplayEventListener();
 
     private void Awake()
     {
@@ -28,12 +28,13 @@ public class AnimationManager : MonoBehaviour
         {
             instance = this;
         }
-        else if(instance == this)
+        else if(instance != this)
         {
             Destroy(this);
+            return;
         }
 
-        eventListener = new GameplayEventListener();
+        eventListener.Activate();
 
         eventListener.AddCallback(typeof(GameStartGameplayEvent), OnGameStart);
         eventListener.AddCallback(typeof(GameEndGameplayEvent), OnGameEnd);
@@ -48,7 +49,7 @@ public class AnimationManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        eventListener = null;
+        eventListener.Deactivate();
     }
 
     private void Start()
@@ -77,7 +78,16 @@ public class AnimationManager : MonoBehaviour
     private void OnGameEnd(BaseGameplayEvent baseEvent)
     {
         GameEndGameplayEvent usableEvent = (GameEndGameplayEvent)baseEvent;
+        Player.StopAllAnimations();
 
+        if(usableEvent.IsWin)
+        {
+
+        }
+        else
+        {
+            Player.PlayDeathAnimation();
+        }
     }
 
     private void OnArrayCreated(BaseGameplayEvent baseEvent)
