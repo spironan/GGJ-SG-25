@@ -24,30 +24,17 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //// Temporary
-        //if (Input.GetKeyDown(KeyCode.RightArrow))
-        //{
-        //    currentId++;
-        //    Debug.Log($"{currentId}");
-        //}
-        //if (Input.GetKeyDown(KeyCode.LeftArrow))
-        //{
-        //    currentId--;
-        //    Debug.Log($"{currentId}");
-        //}
-
         if (Input.GetKeyDown(KeyCode.Space))
         {
             if (BpmTracker.instance.BeatWindow)
             {
                 Debug.Log("attempting to swap");
                 bool success = GameManager.instance.AttemptSwap();
+                if (success)
+                {
+                    // launch an event here to know its PLAYER action that caused it to be correct.
+                }
                 Debug.Log("Succeeded swapping? " + success);
-            }
-            else
-            {
-                // we lost our beat window - deal dmg to player here/suffer the consequences
-                OnFailedSwapAttempt();
             }
         }
     }

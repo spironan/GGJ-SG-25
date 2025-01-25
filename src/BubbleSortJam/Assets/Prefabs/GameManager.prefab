@@ -44,8 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08e7126b0e718754eacb27b5490ada61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  loadPath: Assets/Data/bubble_sort_dataset-new.csv
+  sortLoadPath: Assets/Data/bubble_sort_dataset_new.csv
+  levelLoadPath: Assets/Data/level_data.csv
   currentArray: 
   player: {fileID: 0}
-  arrayParentGO: {fileID: 1414150730116860531, guid: c247024da0d6e5b49a09e431a85d6738, type: 3}
-  arrayElementGO: {fileID: 3881318803196931758, guid: 1c4a7a412fd4a72479af2d777c4606f6, type: 3}

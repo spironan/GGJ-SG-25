@@ -13,6 +13,9 @@ public class BpmTracker : MonoBehaviour
     public event Action OnBeatInc;
     public event Action OnMeasure;
 
+    public event Action OnWindowOpen;
+    public event Action OnWindowClose;
+
     public bool BeatWindow { get; private set; } = false;
     [SerializeField]
     private float timeLineacy = 0.40f; // time in ms +- both sides
@@ -53,12 +56,14 @@ public class BpmTracker : MonoBehaviour
     private void ToggleWindowOn()
     {
         BeatWindow = true;
+        OnWindowOpen?.Invoke();
         //Debug.Log("Beat Window turn on");
     }
 
     private void ToggleWindowOff()
     {
         BeatWindow = false;
+        OnWindowClose?.Invoke();
         //Debug.Log("Beat Window turn offed");
     }
 

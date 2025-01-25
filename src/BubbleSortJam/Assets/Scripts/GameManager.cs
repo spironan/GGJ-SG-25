@@ -18,8 +18,10 @@ public class StageData
     public int arraySize;
     public int swapsRequired;
 }
-public class PlayerData
+public class PlayData
 {
+    public int stageSize;
+    public int currentIteration;
     public int currentIndex;
 };
 
@@ -52,7 +54,7 @@ public class GameManager : MonoBehaviour
     //[SerializeField]
     //private int currentId = 0;
     [SerializeField]
-    private PlayerData playerData;
+    private PlayData playData = new PlayData();
 
     private void Awake()
     {
@@ -120,9 +122,9 @@ public class GameManager : MonoBehaviour
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Start()
     {
-        OnSuccessfulSwap += CheckIfProceed;
+        //OnSuccessfulSwap += CheckIfProceed;
 
         // Load all Possible Arrays
         LoadDataFromCSV(sortLoadPath);
@@ -134,6 +136,49 @@ public class GameManager : MonoBehaviour
         LoadStage();
 
         player.GetComponent<Life>().OnDeath += ResetAll;
+
+        // engage bpm tracker increment bpm
+        BpmTracker.instance.OnWindowClose += OnBeatIncrement;
+    }
+
+    private void OnBeatIncrement()
+    {
+        if(SwapIsNeeded())
+        {
+            Debug.Log("Player should have swapped!");
+
+            // player failed to swap.
+            OnFailedSwap?.Invoke();
+
+            // additionally: we need to help them do it for them
+            // this should always pass
+            AttemptSwap();
+        }
+
+        if (++playData.currentIndex >= playData.stageSize - playData.currentIteration)
+        {
+            // increment iteration & reset current index
+            playData.currentIndex = 0;
+            ++playData.currentIteration;
+            
+            if (StageIsSorted())
+            {
+                Debug.Log("Auto proceeding to the next stage");
+                NextStage();
+            }
+            else if (playData.currentIteration + 1 >= playData.stageSize) // iter ends at n-1 
+            {
+                NextStage();
+            }
+        }
+    }
+
+    private bool SwapIsNeeded()
+    {
+        int i = playData.currentIndex;
+        int j = playData.currentIndex + 1;
+        Debug.Log(i + ", " + j);
+        return (i < currentArray.Count && currentArray[i] > currentArray[j]);
     }
 
     // Update is called once per frame
@@ -145,10 +190,11 @@ public class GameManager : MonoBehaviour
             NextStage();
         }
     }
+
     public bool AttemptSwap()
     {
-        int i = playerData.currentIndex;
-        int j = playerData.currentIndex + 1;
+        int i = playData.currentIndex;
+        int j = playData.currentIndex + 1;
 
         bool result = false;
 
@@ -199,6 +245,11 @@ public class GameManager : MonoBehaviour
     {
         // generate the stage based on requirements.
         GenerateArray(levelData[currentStage].arraySize, levelData[currentStage].swapsRequired);
+        
+        // reload playdata
+        playData.currentIndex = 0;
+        playData.currentIteration = 1;
+        playData.stageSize = levelData[currentStage].arraySize;
     }
 
     private SortData GenerateArray(int size, int swaps)
@@ -240,11 +291,12 @@ public class GameManager : MonoBehaviour
         return true;
     }
 
-    private void CheckIfProceed()
-    {
-        if (StageIsSorted())
-        {
-            NextStage();
-        }
-    }
+    //private void CheckIfProceed()
+    //{
+    //    if (StageIsSorted())
+    //    {
+    //        Debug.Log("Auto proceeding to the next stage");
+    //        NextStage();
+    //    }
+    //}
 }
