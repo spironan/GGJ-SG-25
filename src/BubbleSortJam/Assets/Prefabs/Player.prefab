@@ -361,6 +361,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GameplayDistanceToTravel: {x: 2, y: 2}
+  GameplayBPM: 120
   Circle1: {fileID: 5590768999206411669}
   Circle2: {fileID: 436939325052263399}
   Line: {fileID: 4121289202104203451}

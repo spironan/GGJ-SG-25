@@ -6,6 +6,7 @@ public class PlayerAnimator : MonoBehaviour
 {
     [Header("Gameplay Variables")]
     [SerializeField] private Vector2 GameplayDistanceToTravel;
+    [SerializeField] private float GameplayBPM;
 
     [Header("Components")]
     [SerializeField] private SpriteRenderer Circle1;
@@ -28,7 +29,8 @@ public class PlayerAnimator : MonoBehaviour
 
     private void Start()
     {
-        InitializeGameplayDistanceToTravel();
+        SetGameplayDistanceToTravel(GameplayDistanceToTravel);
+        SetGameplayBPM(GameplayBPM);
     }
 
     private void Update()
@@ -39,6 +41,33 @@ public class PlayerAnimator : MonoBehaviour
     }
 
     #region Gameplay Logic
+
+    private void SetGameplayDistanceToTravel(Vector2 travelDistances)
+    {
+        {
+            PlayerAnimationProperty property = GetAnimationFromPreset(PlayerAnimationPresetType.Start).FindProperty(PlayerAnimationPropertyType.Distance);
+            property.EndValue = travelDistances.x;
+        }
+        {
+            PlayerAnimationProperty property = GetAnimationFromPreset(PlayerAnimationPresetType.MoveNextStart).FindProperty(PlayerAnimationPropertyType.Distance);
+            property.EndValue = travelDistances.y;
+        }
+        {
+            PlayerAnimationProperty property = GetAnimationFromPreset(PlayerAnimationPresetType.MoveNextEnd).FindProperty(PlayerAnimationPropertyType.Distance);
+            property.StartValue = travelDistances.y;
+        }
+    }
+
+    private void SetGameplayBPM(float bpm)
+    {
+        float bps = bpm / 60.0f;
+        float duration = 1.0f / bps;
+
+        foreach(PlayerAnimationPreset preset in Presets)
+        {
+            preset.Animation.Duration = duration;
+        }
+    }
 
     public void AddDistanceTravelled()
     {
@@ -65,22 +94,6 @@ public class PlayerAnimator : MonoBehaviour
         {
             PlayerAnimationProperty property = GetAnimationFromPreset(PlayerAnimationPresetType.FinishEnd).FindProperty(PlayerAnimationPropertyType.Distance);
             property.StartValue = currentDistanceTravelled;
-        }
-    }
-
-    private void InitializeGameplayDistanceToTravel()
-    {
-        {
-            PlayerAnimationProperty property = GetAnimationFromPreset(PlayerAnimationPresetType.Start).FindProperty(PlayerAnimationPropertyType.Distance);
-            property.EndValue = GameplayDistanceToTravel.x;
-        }
-        {
-            PlayerAnimationProperty property = GetAnimationFromPreset(PlayerAnimationPresetType.MoveNextStart).FindProperty(PlayerAnimationPropertyType.Distance);
-            property.EndValue = GameplayDistanceToTravel.y;
-        }
-        {
-            PlayerAnimationProperty property = GetAnimationFromPreset(PlayerAnimationPresetType.MoveNextEnd).FindProperty(PlayerAnimationPropertyType.Distance);
-            property.StartValue = GameplayDistanceToTravel.y;
         }
     }
 
