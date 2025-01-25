@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class MasterAudioController : MonoBehaviour
@@ -6,6 +7,11 @@ public class MasterAudioController : MonoBehaviour
 
     [SerializeField]
     private GameObject sfxSource, bgmSource;
+    
+    [SerializeField]    
+    private int currentLayer = 0;
+
+    private AudioSource[] audioSources;
 
     private void Awake()
     {
@@ -19,7 +25,11 @@ public class MasterAudioController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        audioSources = bgmSource.GetComponentsInChildren<AudioSource>();
+        foreach (AudioSource audioSource in audioSources)
+        {
+            Debug.Log(audioSource.gameObject.name);
+        }
     }
 
     void PrepareTracks(uint layers = 5)

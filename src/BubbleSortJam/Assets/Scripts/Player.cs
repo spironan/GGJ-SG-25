@@ -4,9 +4,6 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [SerializeField]
-    private int currentId = 0;
-
-    [SerializeField]
     private Life health;
 
     private Queue<uint> queue = new Queue<uint>();
@@ -27,24 +24,24 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Temporary
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            currentId++;
-            Debug.Log($"{currentId}");
-        }
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            currentId--;
-            Debug.Log($"{currentId}");
-        }
+        //// Temporary
+        //if (Input.GetKeyDown(KeyCode.RightArrow))
+        //{
+        //    currentId++;
+        //    Debug.Log($"{currentId}");
+        //}
+        //if (Input.GetKeyDown(KeyCode.LeftArrow))
+        //{
+        //    currentId--;
+        //    Debug.Log($"{currentId}");
+        //}
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
             if (BpmTracker.instance.BeatWindow)
             {
                 Debug.Log("attempting to swap");
-                bool success = GameManager.instance.AttemptSwap(currentId, currentId + 1);
+                bool success = GameManager.instance.AttemptSwap();
                 Debug.Log("Succeeded swapping? " + success);
             }
             else

@@ -13,17 +13,33 @@ public class SortData
     public int swaps;
     public List<int> pattern;
 }
+public class StageData
+{
+    public int arraySize;
+    public int swapsRequired;
+}
+public class PlayerData
+{
+    public int currentIndex;
+};
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance { get; private set; }
 
-    [SerializeField]
-    private string loadPath;
-    private List<SortData> database;
+    public bool LevelIsWon { get; private set; } = false;
 
     [SerializeField]
-    private List<int> currentArray;
+    private string sortLoadPath;
+    private List<SortData> sortData = new List<SortData>();
+
+    [SerializeField]
+    private string levelLoadPath;
+    private List<StageData> levelData = new List<StageData>();
+
+    private int currentStage = 0;
+    [SerializeField]
+    private List<int> currentArray = new List<int>();
 
     public event Action OnSuccessfulSwap;
     public event Action OnFailedSwap;
@@ -32,6 +48,11 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     private GameObject player;
+
+    //[SerializeField]
+    //private int currentId = 0;
+    [SerializeField]
+    private PlayerData playerData;
 
     private void Awake()
     {
@@ -44,7 +65,7 @@ public class GameManager : MonoBehaviour
 
     void LoadDataFromCSV(string filePath)
     {
-        database = new List<SortData>();
+        sortData = new List<SortData>();
 
         string[] allLines = File.ReadAllLines(filePath);
 
@@ -69,50 +90,73 @@ public class GameManager : MonoBehaviour
                     data.pattern.Add(int.Parse(count[j]));
                 }
 
-                database.Add(data);
+                sortData.Add(data);
             }
         }
 
-        Debug.Log("Database loaded " + database.Count + " entries");
+        Debug.Log("Database loaded " + sortData.Count + " entries");
+    }
+
+    void LoadLevelFromCSV(string filePath)
+    {
+        levelData = new List<StageData>();
+
+        string[] allLines = File.ReadAllLines(filePath);
+
+        // Loop through each line in the CSV, skipping the header
+        for (int i = 1; i < allLines.Length; i++)
+        {
+            var line = allLines[i];
+            var columns = line.Split(',');
+            // Ensure that the line contains the expected number of columns
+            if (columns.Length > 1)
+            {
+                StageData data = new StageData();
+                data.arraySize = int.Parse(columns[0]);
+                data.swapsRequired = int.Parse(columns[1]);
+                levelData.Add(data);
+            }
+        }
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        OnSuccessfulSwap += CheckIfProceed;
+
         // Load all Possible Arrays
-        LoadDataFromCSV(loadPath);
-        GenerateArray(10, 10);
+        LoadDataFromCSV(sortLoadPath);
+
+        // Load level data
+        LoadLevelFromCSV(levelLoadPath);
+
+        // Start Level
+        LoadStage();
+
         player.GetComponent<Life>().OnDeath += ResetAll;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        // testing code
+        if (Input.GetKeyDown(KeyCode.F1))
+        {
+            NextStage();
+        }
     }
-
-    public SortData GenerateArray(int size, int swaps)
+    public bool AttemptSwap()
     {
-        var result = database.Find(data => data.size == size && data.swaps == swaps);
+        int i = playerData.currentIndex;
+        int j = playerData.currentIndex + 1;
 
-        Debug.Log("Generated array of size "  + result.size + " swaps: " + result.swaps);
-        PrintArray(result.pattern);
-
-        currentArray = result.pattern;
-
-        ArrayCreatedGameplayEvent.BroadcastEvent(result.pattern);
-
-        return result;
-    }
-
-    public bool AttemptSwap(int i, int j)
-    {
         bool result = false;
 
         Debug.Log("Before");
         PrintArray(currentArray);
 
-        if(currentArray[i] > currentArray[j])
+        // check if we should swap
+        if (currentArray[i] > currentArray[j])
         {
             int og = currentArray[i];
             currentArray[i] = currentArray[j];
@@ -123,14 +167,50 @@ public class GameManager : MonoBehaviour
         Debug.Log("After");
         PrintArray(currentArray);
 
-        if (result) 
+        if (result)
         {
             OnSuccessfulSwap?.Invoke();
-        } 
+        }
         else
         {
             OnFailedSwap?.Invoke();
         }
+
+        return result;
+    }
+
+    private void NextStage()
+    {
+        if (++currentStage >= levelData.Count)
+        {
+            // we finished the level! broadcast on game finish event or something
+            LevelIsWon = true;
+            Debug.Log("We have won the game!");
+        }
+        else
+        {
+            LoadStage();
+        }
+
+        Debug.Log("Current Stage is now " + currentStage);
+    }
+
+    private void LoadStage()
+    {
+        // generate the stage based on requirements.
+        GenerateArray(levelData[currentStage].arraySize, levelData[currentStage].swapsRequired);
+    }
+
+    private SortData GenerateArray(int size, int swaps)
+    {
+        var result = sortData.Find(data => data.size == size && data.swaps == swaps);
+
+        Debug.Log("Generated array of size "  + result.size + " swaps: " + result.swaps);
+        PrintArray(result.pattern);
+
+        currentArray = result.pattern;
+
+        ArrayCreatedGameplayEvent.BroadcastEvent(result.pattern);
 
         return result;
     }
@@ -148,5 +228,23 @@ public class GameManager : MonoBehaviour
     private void ResetAll()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    private bool StageIsSorted()
+    {
+        for (int i = 1; i < currentArray.Count; i++)
+        {
+            if(currentArray[i] > currentArray[i - 1])
+                return false;
+        }
+        return true;
+    }
+
+    private void CheckIfProceed()
+    {
+        if (StageIsSorted())
+        {
+            NextStage();
+        }
     }
 }
