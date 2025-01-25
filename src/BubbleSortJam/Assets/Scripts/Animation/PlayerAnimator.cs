@@ -4,6 +4,9 @@ using UnityEngine.Events;
 
 public class PlayerAnimator : MonoBehaviour
 {
+    [Header("Gameplay Variables")]
+    [SerializeField] private Vector2 GameplayDistanceToTravel;
+
     [Header("Components")]
     [SerializeField] private SpriteRenderer Circle1;
     [SerializeField] private SpriteRenderer Circle2;
@@ -22,6 +25,11 @@ public class PlayerAnimator : MonoBehaviour
     private float currentAnimationElapsed = 0.0f;
 
     private float currentDistanceTravelled = 0.0f;
+
+    private void Start()
+    {
+        InitializeGameplayDistanceToTravel();
+    }
 
     private void Update()
     {
@@ -57,6 +65,22 @@ public class PlayerAnimator : MonoBehaviour
         {
             PlayerAnimationProperty property = GetAnimationFromPreset(PlayerAnimationPresetType.FinishEnd).FindProperty(PlayerAnimationPropertyType.Distance);
             property.StartValue = currentDistanceTravelled;
+        }
+    }
+
+    private void InitializeGameplayDistanceToTravel()
+    {
+        {
+            PlayerAnimationProperty property = GetAnimationFromPreset(PlayerAnimationPresetType.Start).FindProperty(PlayerAnimationPropertyType.Distance);
+            property.EndValue = GameplayDistanceToTravel.x;
+        }
+        {
+            PlayerAnimationProperty property = GetAnimationFromPreset(PlayerAnimationPresetType.MoveNextStart).FindProperty(PlayerAnimationPropertyType.Distance);
+            property.EndValue = GameplayDistanceToTravel.y;
+        }
+        {
+            PlayerAnimationProperty property = GetAnimationFromPreset(PlayerAnimationPresetType.MoveNextEnd).FindProperty(PlayerAnimationPropertyType.Distance);
+            property.StartValue = GameplayDistanceToTravel.y;
         }
     }
 
