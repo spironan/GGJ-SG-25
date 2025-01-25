@@ -1,0 +1,32 @@
+using UnityEngine;
+using System;
+
+public class Life : MonoBehaviour
+{
+    public int HealthTotal = 5;
+    [SerializeField]
+    private int currentTotal;
+
+    // Event to notify when the player dies
+    public event Action OnDeath;
+
+    private void Start()
+    {
+        ResetLife();
+    }
+
+    public void TakeDamage(int damage)
+    {
+        currentTotal -= damage;
+        if (currentTotal < 0)
+        {
+            // on death event
+            OnDeath?.Invoke();
+        }
+    }
+
+    public void ResetLife()
+    {
+        currentTotal = HealthTotal;
+    }
+}
