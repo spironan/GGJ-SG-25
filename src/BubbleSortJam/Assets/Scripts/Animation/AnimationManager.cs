@@ -20,7 +20,7 @@ public class AnimationManager : MonoBehaviour
 
     private List<NumberArrayAnimator> numberArrays = new List<NumberArrayAnimator>();
 
-    private GameplayEventListener eventListener = new GameplayEventListener();
+    private GameplayEventListener eventListener = null;
 
     private void Awake()
     {
@@ -32,14 +32,20 @@ public class AnimationManager : MonoBehaviour
         {
             Destroy(this);
         }
+
+        eventListener = new GameplayEventListener();
+        eventListener.AddCallback(typeof(ArrayCreatedGameplayEvent), OnArrayCreated);
+    }
+
+    private void OnDestroy()
+    {
+        eventListener = null;
     }
 
     private void Start()
     {
         Player.SetGameplayDistanceToTravel(new Vector2(GridSlotSize.x, GridSlotSize.y * 2));
         Player.SetGameplayBPM(GameplayBPM);
-
-        eventListener.AddCallback(typeof(ArrayCreatedGameplayEvent), OnArrayCreated);
     }
 
     public void CreateNumberArray(List<int> values)
