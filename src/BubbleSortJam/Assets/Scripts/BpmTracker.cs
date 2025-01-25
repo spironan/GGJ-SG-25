@@ -9,6 +9,7 @@ public class BpmTracker : MonoBehaviour
     private uint BPM = 80;
     private float timePerBeatMS = 0.0f;
     public uint CurrentBeat { get; private set; }
+    public uint CurrentMeasure { get; private set; } = 0;
 
     public event Action OnBeatInc;
     public event Action OnMeasure;
@@ -38,6 +39,8 @@ public class BpmTracker : MonoBehaviour
         InvokeRepeating("ToggleWindowOn", timePerBeatMS - (timeLineacy * 0.5f), timePerBeatMS);
         // e.g. 950, 1700, 2450
         InvokeRepeating("ToggleWindowOff", timePerBeatMS + (timeLineacy * 0.5f), timePerBeatMS);
+
+        OnMeasure += HardCodeAudioPlayTimes;
     }
 
     private void IncrementBPM()
@@ -47,6 +50,7 @@ public class BpmTracker : MonoBehaviour
         OnBeatInc?.Invoke();
         if(CurrentBeat%4 == 0)
         {
+            ++CurrentMeasure;
             OnMeasure?.Invoke();
             //Debug.Log("On Measure Invoked!");
         }
@@ -67,4 +71,16 @@ public class BpmTracker : MonoBehaviour
         //Debug.Log("Beat Window turn offed");
     }
 
+    private void HardCodeAudioPlayTimes()
+    {
+        switch (CurrentMeasure)
+        {
+            case 5:
+            case 13:
+            case 17:
+            case 25:
+                MasterAudioController.instance.UnmuteNextDynamicBGMLayer();
+                break;
+        }
+    }
 }

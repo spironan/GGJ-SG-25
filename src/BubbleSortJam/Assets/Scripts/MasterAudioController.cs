@@ -47,9 +47,10 @@ public class MasterAudioController : MonoBehaviour
 
     }
 
-    public void UnmuteBGMLayer(uint layer = 0)
+    public void UnmuteNextDynamicBGMLayer()
     {
-
+        if (currentLayer < audioSources.Length)
+            audioSources[currentLayer++].mute = false;
     }
 
     public void MuteAllBGM()
