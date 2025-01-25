@@ -1,10 +1,11 @@
-using NUnit.Framework;
 using UnityEngine;
 using System.Collections.Generic;
-using static UnityEngine.Rendering.DebugUI;
 
 public class AnimationManager : MonoBehaviour
 {
+    private static AnimationManager instance = null;
+    public static AnimationManager Instance { get { return instance; } }
+
     [Header("World Space Settings")]
     [SerializeField] private Vector2 GridSlotSize;
     [SerializeField] private float GameplayBPM;
@@ -19,9 +20,7 @@ public class AnimationManager : MonoBehaviour
 
     private List<NumberArrayAnimator> numberArrays = new List<NumberArrayAnimator>();
 
-    private static AnimationManager instance = null;
-
-    public static AnimationManager Instance { get { return instance; } }
+    private GameplayEventListener eventListener = new GameplayEventListener();
 
     private void Awake()
     {
@@ -39,6 +38,8 @@ public class AnimationManager : MonoBehaviour
     {
         Player.SetGameplayDistanceToTravel(new Vector2(GridSlotSize.x, GridSlotSize.y * 2));
         Player.SetGameplayBPM(GameplayBPM);
+
+        eventListener.AddCallback(typeof(ArrayCreatedGameplayEvent), OnArrayCreated);
     }
 
     public void CreateNumberArray(List<int> values)
@@ -52,5 +53,11 @@ public class AnimationManager : MonoBehaviour
         array.Initialize(values, GridSlotSize.x);
 
         numberArrays.Add(array);
+    }
+
+    private void OnArrayCreated(BaseGameplayEvent baseEvent)
+    {
+        ArrayCreatedGameplayEvent usableEvent = (ArrayCreatedGameplayEvent)baseEvent;
+        CreateNumberArray(usableEvent.Values);
     }
 }
