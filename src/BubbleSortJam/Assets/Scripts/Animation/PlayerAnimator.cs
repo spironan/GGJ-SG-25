@@ -124,9 +124,14 @@ public class PlayerAnimator : MonoBehaviour
         return currentAnimation != null;
     }
 
-    public void StopAllAnimations()
+    public void ClearAnimationQueue()
     {
         currentAnimationQueue.Clear();
+    }
+
+    public void StopAllAnimations()
+    {
+        ClearAnimationQueue();
         currentAnimation = null;
     }
 

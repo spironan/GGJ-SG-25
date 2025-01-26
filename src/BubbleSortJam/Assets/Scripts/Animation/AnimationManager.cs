@@ -82,13 +82,13 @@ public class AnimationManager : MonoBehaviour
     private void OnGameEnd(BaseGameplayEvent baseEvent)
     {
         GameEndGameplayEvent usableEvent = (GameEndGameplayEvent)baseEvent;
-        Player.StopAllAnimations();
 
         if (usableEvent.IsWin)
         {
             NumberArrayAnimator numberArrayAnimator = numberArrays[numberArrays.Count - 1];
             numberArrayAnimator.SetAllElementsState(NumberElementState.Sorted);
 
+            Player.ClearAnimationQueue();
             Player.QueueAnimation(PlayerAnimationPresetType.FinishStart);
             Player.QueueAnimation(PlayerAnimationPresetType.FinishEnd, () =>
             {
@@ -97,6 +97,7 @@ public class AnimationManager : MonoBehaviour
         }
         else
         {
+            Player.StopAllAnimations();
             Player.PlayDeathAnimation();
         }
     }
