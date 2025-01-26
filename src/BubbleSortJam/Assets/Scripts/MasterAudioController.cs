@@ -12,6 +12,7 @@ public class MasterAudioController : MonoBehaviour
     private int currentLayer = 0;
 
     private AudioSource[] audioSources;
+    private AudioSource[] sfxControllers;
 
     private void Awake()
     {
@@ -25,11 +26,13 @@ public class MasterAudioController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        sfxControllers = sfxSource.GetComponentsInChildren<AudioSource>();
+
         audioSources = bgmSource.GetComponentsInChildren<AudioSource>();
-        foreach (AudioSource audioSource in audioSources)
-        {
-            Debug.Log(audioSource.gameObject.name);
-        }
+        //foreach (AudioSource audioSource in audioSources)
+        //{
+        //    Debug.Log(audioSource.gameObject.name);
+        //}
     }
 
     public void OnGameStart()
@@ -42,14 +45,27 @@ public class MasterAudioController : MonoBehaviour
         StopAllBGM();
     }
 
-    void PrepareTracks(uint layers = 5)
+    public void PlaySFX(AudioClip clip)
     {
-        
-    }
+        // run some logic to play desired clip
+        AudioSource source = null;
+        foreach (AudioSource sfxSource in sfxControllers)
+        {
+            if (!sfxSource.isPlaying)
+            {
+                source = sfxSource;
+                break;
+            }
+        }
 
-    public void PlaySFX()
-    {
-
+        if (source != null)
+        {
+            source.clip = clip;
+            source.Play();
+        } else
+        {
+            Debug.Log("All sfx sources are busy! skip playing this incoming sfx request");
+        }
     }
 
     public void PlayBGM()
@@ -87,11 +103,6 @@ public class MasterAudioController : MonoBehaviour
     {
         if (currentLayer < audioSources.Length)
             audioSources[currentLayer++].mute = false;
-    }
-
-    public void MuteAllBGM()
-    {
-
     }
 
 }

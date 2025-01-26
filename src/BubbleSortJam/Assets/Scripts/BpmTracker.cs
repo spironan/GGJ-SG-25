@@ -90,7 +90,10 @@ public class BpmTracker : MonoBehaviour
             case 5:
             case 13:
             case 17:
+            case 24:
             case 25:
+            case 41:
+            case 56:
                 MasterAudioController.instance.UnmuteNextDynamicBGMLayer();
                 break;
         }

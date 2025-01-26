@@ -9,7 +9,7 @@ public class Life : MonoBehaviour
 
     // Event to notify when the player dies
     public event Action OnDeath;
-
+    public event Action OnDamageTaken;
     private void Start()
     {
         ResetLife();
@@ -18,6 +18,7 @@ public class Life : MonoBehaviour
     public void TakeDamage(int damage)
     {
         currentTotal -= damage;
+        OnDamageTaken?.Invoke();
         LifeChangedGameplayEvent.BroadcastEvent(currentTotal);
         if (currentTotal < 0)
         {

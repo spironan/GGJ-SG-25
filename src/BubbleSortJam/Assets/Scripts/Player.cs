@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ public class Player : MonoBehaviour
 
     private Queue<uint> queue = new Queue<uint>();
 
+    public event Action OnPlayerSuccessfulAction;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -45,6 +47,7 @@ public class Player : MonoBehaviour
                 {
                     // launch an event here to know its PLAYER action that caused it to be correct.
                     GameManager.instance.BroadcastCorrectAtCurrent();
+                    OnPlayerSuccessfulAction?.Invoke();
                 }
                 else
                 {
@@ -54,7 +57,8 @@ public class Player : MonoBehaviour
             }
             else
             {
-                // do dmg here?
+                OnFailedSwapAttempt();
+                GameManager.instance.BroadcastMistakeAtCurrent();
             }
         }
     }

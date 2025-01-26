@@ -225,18 +225,20 @@ public class GameManager : MonoBehaviour
             ArrayElementStateChangedEvent.BroadcastEvent(currentStage, playData.currentIndex, NumberElementState.Sorted);
             //ArrayElementStateChangedEvent.BroadcastEvent(currentStage, playData.currentIndex - 1, NumberElementState.Neutral);
 
+            Debug.Log("does the code ever reach ehere?");
+
             // increment iteration & reset current index
             playData.currentIndex = 0;
             ++playData.currentIteration;
-
 
             if (StageIsSorted())
             {
                 Debug.Log("Auto proceeding to the next stage");
                 NextStage();
             }
-            else if (playData.currentIteration + 1 >= playData.stageSize) // iter ends at n-1 
+            else if (playData.currentIteration >= playData.stageSize) // iter ends at n
             {
+                Debug.Log("final iteration reached. going next stage");
                 NextStage();
             }
             else
@@ -276,8 +278,8 @@ public class GameManager : MonoBehaviour
 
         bool result = false;
 
-        Debug.Log("Before");
-        PrintArray(currentArray);
+        //Debug.Log("Before");
+        //PrintArray(currentArray);
 
         // check if we should swap
         if (currentArray[i] > currentArray[j])
@@ -286,10 +288,11 @@ public class GameManager : MonoBehaviour
             currentArray[i] = currentArray[j];
             currentArray[j] = og;
             result = true;
+            Debug.Log("Successfully swapped!");
         }
 
-        Debug.Log("After");
-        PrintArray(currentArray);
+        //Debug.Log("After");
+        //PrintArray(currentArray);
 
         if (result)
         {
@@ -384,7 +387,7 @@ public class GameManager : MonoBehaviour
     {
         for (int i = 1; i < currentArray.Count; i++)
         {
-            if(currentArray[i] > currentArray[i - 1])
+            if(currentArray[i] < currentArray[i - 1])
                 return false;
         }
         return true;
