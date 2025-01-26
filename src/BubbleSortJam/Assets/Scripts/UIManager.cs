@@ -56,14 +56,16 @@ public class UIManager : MonoBehaviour
     private void OnGameEnd(BaseGameplayEvent baseEvent)
     {
         GameEndGameplayEvent usableEvent = (GameEndGameplayEvent)baseEvent;
-        if(usableEvent.IsWin)
-        {
-            SetActiveUI(WinScreen);
-        }
-        else
+        if(!usableEvent.IsWin)
         {
             SetActiveUI(LoseScreen);
         }
+        // will show win screen after delay from animation
+    }
+
+    public void ShowWinScreen()
+    {
+        SetActiveUI(WinScreen);
     }
 
     private void SetActiveUI(GameObject targetUI)

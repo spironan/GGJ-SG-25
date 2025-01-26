@@ -86,7 +86,14 @@ public class AnimationManager : MonoBehaviour
 
         if (usableEvent.IsWin)
         {
+            NumberArrayAnimator numberArrayAnimator = numberArrays[numberArrays.Count - 1];
+            numberArrayAnimator.SetAllElementsState(NumberElementState.Sorted);
 
+            Player.QueueAnimation(PlayerAnimationPresetType.FinishStart);
+            Player.QueueAnimation(PlayerAnimationPresetType.FinishEnd, () =>
+            {
+                UIManager.Instance.ShowWinScreen();
+            });
         }
         else
         {

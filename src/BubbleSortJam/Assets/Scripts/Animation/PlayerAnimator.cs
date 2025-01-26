@@ -98,19 +98,23 @@ public class PlayerAnimator : MonoBehaviour
 
     #region Animations
 
-    public void QueueAnimation(PlayerAnimationPresetType presetType)
+    public void QueueAnimation(PlayerAnimationPresetType presetType, UnityAction onFinished = null)
     {
         foreach(PlayerAnimationPreset preset in Presets)
         {
             if(preset.Type == presetType)
             {
+                if(onFinished != null)
+                {
+                    preset.Animation.OnFinished.AddListener(onFinished);
+                }
                 QueueAnimation(preset.Animation);
                 break;
             }
         }
     }
 
-    public void QueueAnimation(PlayerAnimation animation)
+    private void QueueAnimation(PlayerAnimation animation)
     {
         currentAnimationQueue.Enqueue(animation);
     }
@@ -167,6 +171,7 @@ public class PlayerAnimator : MonoBehaviour
             UpdateVisuals();
 
             currentAnimation.OnFinished?.Invoke();
+            currentAnimation.OnFinished.RemoveAllListeners();
             currentAnimation = null;
             currentAnimationElapsed = 0.0f;
         }

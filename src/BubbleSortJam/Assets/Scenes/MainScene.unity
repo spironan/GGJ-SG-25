@@ -1177,6 +1177,10 @@ PrefabInstance:
       propertyPath: BPM
       value: 95
       objectReference: {fileID: 0}
+    - target: {fileID: 6432623009148097916, guid: 2d94a768717bc334dba8b32808990f30, type: 3}
+      propertyPath: timeLineacy
+      value: 0.2
+      objectReference: {fileID: 0}
     - target: {fileID: 7313747476074492549, guid: 2d94a768717bc334dba8b32808990f30, type: 3}
       propertyPath: m_Name
       value: BpmTracker
