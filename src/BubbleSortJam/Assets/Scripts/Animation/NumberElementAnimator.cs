@@ -9,6 +9,12 @@ public class NumberElementAnimator : MonoBehaviour
     [SerializeField] private TextMeshProUGUI NumberText;
     [SerializeField] private SpriteRenderer Highlight;
 
+    [Header("Particle Settings")]
+    [SerializeField] private ParticleSystem TopParticles;
+    [SerializeField] private ParticleSystem TopIntenseParticles;
+    [SerializeField] private ParticleSystem LeftParticles;
+    [SerializeField] private ParticleSystem RightParticles;
+
     [Header("Animation Settings")]
     [SerializeField] private SimpleAnimationData SwapStartAnimData;
     [SerializeField] private SimpleAnimationData SwapEndAnimData;
@@ -30,6 +36,26 @@ public class NumberElementAnimator : MonoBehaviour
     public int GetValue()
     {
         return value;
+    }
+
+    public void PlayTopParticles()
+    {
+        TopParticles?.Play();
+    }
+
+    public void PlayTopIntenseParticles()
+    {
+        TopIntenseParticles?.Play();
+    }
+
+    public void PlayLeftParticles()
+    {
+        LeftParticles?.Play();
+    }
+
+    public void PlayRightParticles()
+    {
+        RightParticles?.Play();
     }
 
     public void UpdateState(NumberElementState state)
@@ -59,6 +85,11 @@ public class NumberElementAnimator : MonoBehaviour
 
     private IEnumerator StateTransitionAnimationCoroutine()
     {
+        if (CurrentState == NumberElementState.Sorted)
+        {
+            PlayTopParticles();
+        }
+
         float elapsed = 0.0f;
         Color startColor = GetColor();
         Color endColor = Color.white;

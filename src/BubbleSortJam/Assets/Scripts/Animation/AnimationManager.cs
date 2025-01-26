@@ -130,6 +130,7 @@ public class AnimationManager : MonoBehaviour
         {
             NumberArrayAnimator numberArrayAnimator = numberArrays[usableEvent.StageIndex];
             numberArrayAnimator.SetAllElementsState(NumberElementState.Sorted);
+            numberArrayAnimator.PlayArrayCompleteParticles();
         }
 
         Player.QueueAnimation(PlayerAnimationPresetType.MoveNextStart);

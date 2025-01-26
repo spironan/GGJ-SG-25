@@ -17,6 +17,20 @@ public class NumberArrayAnimator : MonoBehaviour
         }
     }
 
+    public void PlayArrayCompleteParticles()
+    {
+        for(int i = 0; i < elements.Count; ++i)
+        {
+            elements[i].PlayTopIntenseParticles();
+        }
+
+        if(elements.Count > 0)
+        {
+            elements[0].PlayLeftParticles();
+            elements[elements.Count - 1].PlayRightParticles();
+        }
+    }
+
     public void PlaySwapAnimation(int elementIndex)
     {
         if(elementIndex < 0 || elementIndex + 1 >= elements.Count)
