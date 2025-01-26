@@ -6,6 +6,7 @@ public class PlaySFXHookups : MonoBehaviour
     public AudioClip correct;
     public AudioClip bubblePop;
     public AudioClip lose;
+    public AudioClip rowclear;
 
     public Player player;
     public Life playerHP;
@@ -16,6 +17,7 @@ public class PlaySFXHookups : MonoBehaviour
         player.OnPlayerSuccessfulAction += PlaySFXOnSuccessfulSwap;
         playerHP.OnDamageTaken += PlaySFXOnDmgTaken;
         playerHP.OnDeath+= PlaySFXOnDeath;
+        GameManager.instance.OnCompleteRow += PlaySFXOnRowClear;
     }
 
     private void PlaySFXOnBeatInc()
@@ -41,6 +43,14 @@ public class PlaySFXHookups : MonoBehaviour
         Debug.Log("SFX Played On Death");
         MasterAudioController.instance.PlaySFX(lose);
     }
+
+
+    private void PlaySFXOnRowClear()
+    {
+        Debug.Log("SFX Played On Row Cleared");
+        MasterAudioController.instance.PlaySFX(rowclear);
+    }
+
     // Update is called once per frame
     void Update()
     {

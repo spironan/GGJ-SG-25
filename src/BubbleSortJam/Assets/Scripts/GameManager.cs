@@ -76,7 +76,18 @@ public class GameManager : MonoBehaviour
     {
         sortData = new List<SortData>();
 
-        string[] allLines = File.ReadAllLines(filePath);
+        // Load CSV from Resources folder
+        TextAsset csvFile = Resources.Load<TextAsset>(filePath);
+
+        if (csvFile == null)
+        {
+            Debug.LogError("Failed to load CSV file from Resources: " + filePath);
+            return;
+        }
+
+        // Read all lines from the loaded TextAsset (split by new line)
+        string[] allLines = csvFile.text.Split(new[] { '\r', '\n' }, System.StringSplitOptions.RemoveEmptyEntries);
+
 
         // Loop through each line in the CSV, skipping the header
         for (int i = 1; i < allLines.Length; i++)
@@ -110,7 +121,17 @@ public class GameManager : MonoBehaviour
     {
         levelData = new List<StageData>();
 
-        string[] allLines = File.ReadAllLines(filePath);
+        // Load CSV from Resources folder
+        TextAsset csvFile = Resources.Load<TextAsset>(filePath);
+
+        if (csvFile == null)
+        {
+            Debug.LogError("Failed to load CSV file from Resources: " + filePath);
+            return;
+        }
+
+        // Read all lines from the loaded TextAsset (split by new line)
+        string[] allLines = csvFile.text.Split(new[] { '\r', '\n' }, System.StringSplitOptions.RemoveEmptyEntries);
 
         // Loop through each line in the CSV, skipping the header
         for (int i = 1; i < allLines.Length; i++)
@@ -279,6 +300,11 @@ public class GameManager : MonoBehaviour
         //{
         //    NextStage();
         //}
+
+        if ( (!hasStartedGame || hasEndedGame)  && Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
     }
 
     public bool AttemptSwap()
@@ -343,6 +369,8 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            OnCompleteRow?.Invoke();
+
             bool isAtEnd = playData.currentIndex <= 1;
 
             LoadStage();
