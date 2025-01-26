@@ -20,7 +20,7 @@ public class Life : MonoBehaviour
         currentTotal -= damage;
         OnDamageTaken?.Invoke();
         LifeChangedGameplayEvent.BroadcastEvent(currentTotal);
-        if (currentTotal < 0)
+        if (currentTotal <= 0)
         {
             // on death event
             OnDeath?.Invoke();

@@ -21,7 +21,7 @@ public class PlaySFXHookups : MonoBehaviour
     private void PlaySFXOnBeatInc()
     {
         Debug.Log("SFX Played On Successfull Swap");
-        MasterAudioController.instance.PlaySFX(metronome, 0.05f);
+        MasterAudioController.instance.PlaySFX(metronome, 0.08f);
     }
 
     private void PlaySFXOnSuccessfulSwap()

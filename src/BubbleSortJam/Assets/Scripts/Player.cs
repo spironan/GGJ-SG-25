@@ -10,6 +10,11 @@ public class Player : MonoBehaviour
     private Queue<uint> queue = new Queue<uint>();
 
     public event Action OnPlayerSuccessfulAction;
+    public bool IsInvulnerable { get; private set; } = false;
+
+    public float InvulnerableDuration = 1.0f;
+    private float invuldurleft = 0;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -19,6 +24,12 @@ public class Player : MonoBehaviour
 
     private void OnFailedSwapAttempt()
     {
+        if (IsInvulnerable)
+            return;
+
+        IsInvulnerable = true;
+        invuldurleft = InvulnerableDuration;
+
         health.TakeDamage(1);
         Debug.Log("Took Damage");
     }
@@ -26,6 +37,15 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (IsInvulnerable)
+        {
+            invuldurleft -= Time.deltaTime;
+            if (invuldurleft <= 0.0f)
+            {
+                IsInvulnerable = false;
+            }
+        }
+
         if (Input.GetKeyDown(KeyCode.Space))
         {
             if(!GameManager.instance.HasStartedGame())

@@ -137,8 +137,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   metronome: {fileID: 8300000, guid: 210cad8f86b58b544b120717614e04c6, type: 3}
-  correct: {fileID: 0}
-  bubblePop: {fileID: 8300000, guid: ab936c8e87ffa8e4499cd65301a95056, type: 3}
+  correct: {fileID: 8300000, guid: ab936c8e87ffa8e4499cd65301a95056, type: 3}
+  bubblePop: {fileID: 8300000, guid: 28cc700a57fc4574e946313489443c02, type: 3}
   lose: {fileID: 8300000, guid: 3cabbc2d6861e894fbcb5afdf63572b0, type: 3}
   player: {fileID: 1787578146}
   playerHP: {fileID: 1787578145}
@@ -1602,6 +1602,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 753438736644898378, guid: 73fe3c1df2d44b949b809aed2b5d06df, type: 3}
+      propertyPath: InvulnerableDuration
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 1280948643480477034, guid: 73fe3c1df2d44b949b809aed2b5d06df, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1644,7 +1648,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2746396070733723208, guid: 73fe3c1df2d44b949b809aed2b5d06df, type: 3}
       propertyPath: HealthTotal
-      value: 5
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 5736579909319687394, guid: 73fe3c1df2d44b949b809aed2b5d06df, type: 3}
       propertyPath: m_Name
