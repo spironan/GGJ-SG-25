@@ -59,7 +59,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _LensEdgeSharpness: 0.4
-    - _MagnifyDistortion: 0.05
+    - _MagnifyDistortion: 0.01
     - _Zoom: 0.4
     m_Colors: []
   m_BuildTextureStacks: []

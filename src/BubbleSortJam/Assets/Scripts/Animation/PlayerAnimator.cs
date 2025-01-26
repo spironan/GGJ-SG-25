@@ -29,7 +29,7 @@ public class PlayerAnimator : MonoBehaviour
 
     private void Update()
     {
-        ProcessAnimationQueue();
+        //ProcessAnimationQueue();
         ProcessCurrentAnimation(Time.deltaTime);
     }
 
@@ -116,7 +116,14 @@ public class PlayerAnimator : MonoBehaviour
 
     private void QueueAnimation(PlayerAnimation animation)
     {
-        currentAnimationQueue.Enqueue(animation);
+        if(currentAnimation == null)
+        {
+            currentAnimation = animation;
+        }
+        else
+        {
+            currentAnimationQueue.Enqueue(animation);
+        }
     }
 
     public bool IsPlaying()
@@ -147,16 +154,16 @@ public class PlayerAnimator : MonoBehaviour
         return null;
     }
 
-    private void ProcessAnimationQueue()
-    {
-        if(currentAnimation != null || currentAnimationQueue.Count <= 0)
-        {
-            return;
-        }
+    //private void ProcessAnimationQueue()
+    //{
+    //    if(currentAnimation != null || currentAnimationQueue.Count <= 0)
+    //    {
+    //        return;
+    //    }
 
-        currentAnimation = currentAnimationQueue.Dequeue();
-        currentAnimationElapsed = 0.0f;
-    }
+    //    currentAnimation = currentAnimationQueue.Dequeue();
+    //    currentAnimationElapsed = 0.0f;
+    //}
 
     private void ProcessCurrentAnimation(float deltaTime)
     {
@@ -177,8 +184,17 @@ public class PlayerAnimator : MonoBehaviour
 
             currentAnimation.OnFinished?.Invoke();
             currentAnimation.OnFinished.RemoveAllListeners();
-            currentAnimation = null;
-            currentAnimationElapsed = 0.0f;
+
+            if(currentAnimationQueue.Count > 0)
+            {
+                currentAnimation = currentAnimationQueue.Dequeue();
+                currentAnimationElapsed -= currentAnimation.Duration;
+            }
+            else
+            {
+                currentAnimation = null;
+                currentAnimationElapsed = 0.0f;
+            }
         }
         else
         {
@@ -232,11 +248,11 @@ public class PlayerAnimator : MonoBehaviour
 
     public void PlayLeniencyWindowDeactivated()
     {
-        if(Pivot.transform.localScale.x > 1.0f)
+        if(Pivot.transform.localScale.x > 1.5f)
         {
             Pivot.GetComponent<TweenScript>().Play("LeniencyWindowOff");
         }
-        if (NotPivot.transform.localScale.x > 1.0f)
+        if (NotPivot.transform.localScale.x > 1.5f)
         {
             NotPivot.GetComponent<TweenScript>().Play("LeniencyWindowOff");
         }

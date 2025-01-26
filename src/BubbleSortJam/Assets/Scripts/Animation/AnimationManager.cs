@@ -87,6 +87,7 @@ public class AnimationManager : MonoBehaviour
         {
             NumberArrayAnimator numberArrayAnimator = numberArrays[numberArrays.Count - 1];
             numberArrayAnimator.SetAllElementsState(NumberElementState.Sorted);
+            numberArrayAnimator.PlayArrayCompleteParticles();
 
             Player.ClearAnimationQueue();
             Player.QueueAnimation(PlayerAnimationPresetType.FinishStart);
