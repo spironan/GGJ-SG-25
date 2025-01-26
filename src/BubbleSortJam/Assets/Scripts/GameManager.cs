@@ -231,15 +231,25 @@ public class GameManager : MonoBehaviour
             playData.currentIndex = 0;
             ++playData.currentIteration;
 
-            if (StageIsSorted())
-            {
-                Debug.Log("Auto proceeding to the next stage");
-                NextStage();
-            }
-            else if (playData.currentIteration >= playData.stageSize) // iter ends at n
+            if (playData.currentIteration >= playData.stageSize) // iter ends at n
             {
                 Debug.Log("final iteration reached. going next stage");
                 NextStage();
+
+                if (!LevelIsWon)
+                {
+                    playData.startBeatsToIgnoreLeft = 4;
+                }
+            }
+            else if (StageIsSorted())
+            {
+                Debug.Log("Auto proceeding to the next stage");
+                NextStage();
+
+                if (!LevelIsWon)
+                {
+                    playData.startBeatsToIgnoreLeft = 5;
+                }
             }
             else
             {
@@ -333,8 +343,9 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            bool isAtEnd = playData.currentIndex <= 1;
+
             LoadStage();
-            playData.startBeatsToIgnoreLeft = 5;
             StageCompleteGameplayEvent.BroadcastEvent(currentStage - 1);
             StartIterationGameplayEvent.BroadcastEvent(playData.stageSize - playData.currentIteration + 1);
         }
