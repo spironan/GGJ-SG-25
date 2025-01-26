@@ -141,6 +141,7 @@ MonoBehaviour:
   bubblePop: {fileID: 8300000, guid: 28cc700a57fc4574e946313489443c02, type: 3}
   lose: {fileID: 8300000, guid: 3cabbc2d6861e894fbcb5afdf63572b0, type: 3}
   rowclear: {fileID: 8300000, guid: b2e6ff9b2bd3ae74384a2c67b8350498, type: 3}
+  winSFX: {fileID: 8300000, guid: 5e06f217197f1684d8477eaf69130292, type: 3}
   player: {fileID: 1787578146}
   playerHP: {fileID: 1787578145}
 --- !u!1 &519420028

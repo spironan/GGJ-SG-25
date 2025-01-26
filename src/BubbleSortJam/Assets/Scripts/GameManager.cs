@@ -359,6 +359,8 @@ public class GameManager : MonoBehaviour
     {
         if (++currentStage >= levelData.Count)
         {
+            OnCompleteAll?.Invoke();
+
             // we finished the level! broadcast on game finish event or something
             hasEndedGame = true;
             LevelIsWon = true;

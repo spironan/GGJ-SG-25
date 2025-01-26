@@ -7,6 +7,7 @@ public class PlaySFXHookups : MonoBehaviour
     public AudioClip bubblePop;
     public AudioClip lose;
     public AudioClip rowclear;
+    public AudioClip winSFX;
 
     public Player player;
     public Life playerHP;
@@ -18,8 +19,14 @@ public class PlaySFXHookups : MonoBehaviour
         playerHP.OnDamageTaken += PlaySFXOnDmgTaken;
         playerHP.OnDeath+= PlaySFXOnDeath;
         GameManager.instance.OnCompleteRow += PlaySFXOnRowClear;
+        GameManager.instance.OnCompleteAll += PlaySFXOnFinish;
     }
 
+    private void PlaySFXOnFinish()
+    {
+        Debug.Log("SFX Played On Win");
+        MasterAudioController.instance.PlaySFX(winSFX);
+    }
     private void PlaySFXOnBeatInc()
     {
         Debug.Log("SFX Played On Successfull Swap");
@@ -43,7 +50,6 @@ public class PlaySFXHookups : MonoBehaviour
         Debug.Log("SFX Played On Death");
         MasterAudioController.instance.PlaySFX(lose);
     }
-
 
     private void PlaySFXOnRowClear()
     {
