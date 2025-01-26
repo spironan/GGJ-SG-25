@@ -45,7 +45,7 @@ public class MasterAudioController : MonoBehaviour
         StopAllBGM();
     }
 
-    public void PlaySFX(AudioClip clip)
+    public void PlaySFX(AudioClip clip, float vol = 1.0f)
     {
         // run some logic to play desired clip
         AudioSource source = null;
@@ -60,8 +60,7 @@ public class MasterAudioController : MonoBehaviour
 
         if (source != null)
         {
-            source.clip = clip;
-            source.Play();
+            source.PlayOneShot(clip, vol);
         } else
         {
             Debug.Log("All sfx sources are busy! skip playing this incoming sfx request");
