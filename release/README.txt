@@ -1,1 +1,1 @@
-<ADD FULL INSTALLATION INSTRUCTIONS HERE>
+unzip bubble_beats_windows.zip and in the v1.3 folder, launch BubbleBeats.exe.
