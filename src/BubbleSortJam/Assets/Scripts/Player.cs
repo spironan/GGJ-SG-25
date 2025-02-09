@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
@@ -45,42 +46,46 @@ public class Player : MonoBehaviour
                 IsInvulnerable = false;
             }
         }
+    }
 
-        if (Input.GetKeyDown(KeyCode.Space))
+    public void OnSwapAction(InputAction.CallbackContext context)
+    {
+        if(!context.performed)
         {
-            if(!GameManager.instance.HasStartedGame())
-            {
-                GameManager.instance.StartGame();
-                return;
-            }
-            else if(GameManager.instance.HasEndedGame())
-            {
-                GameManager.instance.ResetAll();
-                return;
-            }
+            return;
+        }
 
-            if (GameManager.instance.BeatWindow)
+        if (!GameManager.instance.HasStartedGame())
+        {
+            GameManager.instance.StartGame();
+            return;
+        }
+        else if (GameManager.instance.HasEndedGame())
+        {
+            GameManager.instance.ResetAll();
+            return;
+        }
+
+        if (GameManager.instance.BeatWindow)
+        {
+            Debug.Log("attempting to swap");
+            bool success = GameManager.instance.AttemptSwap();
+            if (success)
             {
-                Debug.Log("attempting to swap");
-                bool success = GameManager.instance.AttemptSwap();
-                if (success)
-                {
-                    // launch an event here to know its PLAYER action that caused it to be correct.
-                    GameManager.instance.BroadcastCorrectAtCurrent();
-                    OnPlayerSuccessfulAction?.Invoke();
-                }
-                else
-                {
-                    GameManager.instance.BroadcastMistakeAtCurrent();
-                }
-                Debug.Log("Succeeded swapping? " + success);
+                // launch an event here to know its PLAYER action that caused it to be correct.
+                GameManager.instance.BroadcastCorrectAtCurrent();
+                OnPlayerSuccessfulAction?.Invoke();
             }
             else
             {
-                OnFailedSwapAttempt();
                 GameManager.instance.BroadcastMistakeAtCurrent();
             }
+            Debug.Log("Succeeded swapping? " + success);
+        }
+        else
+        {
+            OnFailedSwapAttempt();
+            GameManager.instance.BroadcastMistakeAtCurrent();
         }
     }
-
 }
