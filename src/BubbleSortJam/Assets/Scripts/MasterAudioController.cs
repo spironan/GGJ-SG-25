@@ -35,7 +35,7 @@ public class MasterAudioController : MonoBehaviour
         //}
     }
 
-    public void OnGameStart()
+    public void OnFullGameStart()
     {
         PlayAllBGM();
     }

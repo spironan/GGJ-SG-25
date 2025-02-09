@@ -41,6 +41,10 @@ public class GameManager : MonoBehaviour
     private string levelLoadPath;
     private List<StageData> levelData = new List<StageData>();
 
+    public int TutorialLevels = 4;
+    private bool startedTutorial = false;
+    private bool finishedTutorial = false;
+
     private bool hasStartedGame = false;
     private bool hasEndedGame = false;
     private int currentStage = 0;
@@ -54,6 +58,7 @@ public class GameManager : MonoBehaviour
     public event Action OnFailedSwap;
     public event Action OnCompleteRow;
     public event Action OnCompleteAll;
+    public event Action OnTutorialComplete;
 
     [SerializeField]
     private GameObject player;
@@ -168,6 +173,9 @@ public class GameManager : MonoBehaviour
         // engage bpm tracker increment bpm
         BpmTracker.instance.OnWindowOpen += OnBeatWindowOpen;
         BpmTracker.instance.OnWindowClose += OnBeatWindowClosed;
+
+        OnTutorialComplete += MasterAudioController.instance.OnFullGameStart;
+
     }
 
     public bool HasStartedGame()
@@ -184,7 +192,9 @@ public class GameManager : MonoBehaviour
     {
         hasStartedGame = true;
 
-        MasterAudioController.instance.OnGameStart();
+        startedTutorial = true;
+        
+        //MasterAudioController.instance.OnFullGameStart();
         BpmTracker.instance.OnGameStart();
 
         GameStartGameplayEvent.BroadcastEvent();
@@ -295,11 +305,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // testing code
-        //if (Input.GetKeyDown(KeyCode.F1))
-        //{
-        //    NextStage();
-        //}
+        Debug.Log("camera proj matrix\n" + Camera.main.projectionMatrix);
 
         if ( (!hasStartedGame || hasEndedGame)  && Input.GetKeyDown(KeyCode.Escape))
         {
@@ -373,8 +379,6 @@ public class GameManager : MonoBehaviour
         {
             OnCompleteRow?.Invoke();
 
-            bool isAtEnd = playData.currentIndex <= 1;
-
             LoadStage();
             StageCompleteGameplayEvent.BroadcastEvent(currentStage - 1);
             StartIterationGameplayEvent.BroadcastEvent(playData.stageSize - playData.currentIteration + 1);
@@ -385,6 +389,12 @@ public class GameManager : MonoBehaviour
 
     private void LoadStage()
     {
+        if(currentStage > TutorialLevels)
+        {
+            finishedTutorial = true;
+            OnTutorialComplete?.Invoke();
+        }
+
         // generate the stage based on requirements.
         GenerateArray(levelData[currentStage].arraySize, levelData[currentStage].swapsRequired);
         
@@ -434,12 +444,4 @@ public class GameManager : MonoBehaviour
         return true;
     }
 
-    //private void CheckIfProceed()
-    //{
-    //    if (StageIsSorted())
-    //    {
-    //        Debug.Log("Auto proceeding to the next stage");
-    //        NextStage();
-    //    }
-    //}
 }
