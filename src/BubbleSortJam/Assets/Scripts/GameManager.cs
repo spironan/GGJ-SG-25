@@ -308,7 +308,7 @@ public class GameManager : MonoBehaviour
     {
         //Debug.Log("camera proj matrix\n" + Camera.main.projectionMatrix);
 
-        if ( (!hasStartedGame || hasEndedGame)  && Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
         {
             Application.Quit();
         }

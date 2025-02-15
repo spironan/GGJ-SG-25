@@ -97,7 +97,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tutorialUIPrefab: {fileID: 5537654837490632972, guid: 3987de2fc8902c246a4e01dc9f8ab771, type: 3}
   tutorialData:
-  - message: LOOK CLOSELY/ OBSERVE
+  - message: LOOK CLOSELY
   - message: TAP THE RIGHT ONE
   - message: JUST KEEP TAPPING
   - message: CAN YOU DO IT?
