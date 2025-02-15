@@ -21,6 +21,7 @@ public class Player : MonoBehaviour
     {
         health = GetComponent<Life>();
         GameManager.instance.OnFailedSwap += OnFailedSwapAttempt;
+        GameManager.instance.OnCompleteRow += RegainHealth;
     }
 
     private void OnFailedSwapAttempt()
@@ -87,5 +88,10 @@ public class Player : MonoBehaviour
             OnFailedSwapAttempt();
             GameManager.instance.BroadcastMistakeAtCurrent();
         }
+    }
+
+    void RegainHealth()
+    {
+        health.RegainHealth(1);
     }
 }

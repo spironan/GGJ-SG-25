@@ -33,4 +33,15 @@ public class Life : MonoBehaviour
         currentTotal = HealthTotal;
         LifeChangedGameplayEvent.BroadcastEvent(currentTotal);
     }
+
+    public void RegainHealth(int hp)
+    {
+        HealthTotal += hp;
+        currentTotal += hp;
+        //if (currentTotal > HealthTotal)
+        //{
+        //    currentTotal = HealthTotal;
+        //}
+        LifeChangedGameplayEvent.BroadcastEvent(currentTotal);
+    }
 }

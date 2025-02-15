@@ -249,7 +249,7 @@ public class GameManager : MonoBehaviour
             AttemptSwap();
         }
 
-        Debug.Log("iteration " + playData.currentIteration + " index " + (playData.currentIndex + 1));
+        //Debug.Log("iteration " + playData.currentIteration + " index " + (playData.currentIndex + 1));
 
         if (++playData.currentIndex >= playData.stageSize - playData.currentIteration)
         {
@@ -305,7 +305,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("camera proj matrix\n" + Camera.main.projectionMatrix);
+        //Debug.Log("camera proj matrix\n" + Camera.main.projectionMatrix);
 
         if ( (!hasStartedGame || hasEndedGame)  && Input.GetKeyDown(KeyCode.Escape))
         {
@@ -389,7 +389,7 @@ public class GameManager : MonoBehaviour
 
     private void LoadStage()
     {
-        if(currentStage > TutorialLevels)
+        if(!finishedTutorial && currentStage > TutorialLevels - 1)
         {
             finishedTutorial = true;
             OnTutorialComplete?.Invoke();

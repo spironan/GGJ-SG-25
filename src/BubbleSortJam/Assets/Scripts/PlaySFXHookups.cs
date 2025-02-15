@@ -24,36 +24,36 @@ public class PlaySFXHookups : MonoBehaviour
 
     private void PlaySFXOnFinish()
     {
-        Debug.Log("SFX Played On Win");
+        //Debug.Log("SFX Played On Win");
         MasterAudioController.instance.PlaySFX(winSFX);
     }
     private void PlaySFXOnBeatInc()
     {
-        Debug.Log("SFX Played On Successfull Swap");
+        //Debug.Log("SFX Played On Successfull Swap");
         MasterAudioController.instance.PlaySFX(metronome, 0.08f);
     }
 
     private void PlaySFXOnSuccessfulSwap()
     {
-        Debug.Log("SFX Played On Successfull Swap");
+        //Debug.Log("SFX Played On Successfull Swap");
         MasterAudioController.instance.PlaySFX(correct);
     }
 
     private void PlaySFXOnDmgTaken()
     {
-        Debug.Log("SFX Played On Damage Taken");
+        //Debug.Log("SFX Played On Damage Taken");
         MasterAudioController.instance.PlaySFX(bubblePop);
     }
 
     private void PlaySFXOnDeath()
     {
-        Debug.Log("SFX Played On Death");
+        //Debug.Log("SFX Played On Death");
         MasterAudioController.instance.PlaySFX(lose);
     }
 
     private void PlaySFXOnRowClear()
     {
-        Debug.Log("SFX Played On Row Cleared");
+        //Debug.Log("SFX Played On Row Cleared");
         MasterAudioController.instance.PlaySFX(rowclear);
     }
 

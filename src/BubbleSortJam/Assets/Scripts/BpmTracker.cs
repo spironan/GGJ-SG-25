@@ -31,7 +31,7 @@ public class BpmTracker : MonoBehaviour
 
     private void Start()
     {
-        OnMeasure += HardCodeAudioPlayTimes;
+        //OnMeasure += HardCodeAudioPlayTimes;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -83,19 +83,19 @@ public class BpmTracker : MonoBehaviour
         //Debug.Log("Beat Window turn offed");
     }
 
-    private void HardCodeAudioPlayTimes()
-    {
-        switch (CurrentMeasure)
-        {
-            case 5:
-            case 13:
-            case 17:
-            case 24:
-            case 25:
-            case 41:
-            case 56:
-                MasterAudioController.instance.UnmuteNextDynamicBGMLayer();
-                break;
-        }
-    }
+    //private void HardCodeAudioPlayTimes()
+    //{
+    //    switch (CurrentMeasure)
+    //    {
+    //        case 5:
+    //        case 13:
+    //        case 17:
+    //        case 24:
+    //        case 25:
+    //        case 41:
+    //        case 56:
+    //            MasterAudioController.instance.UnmuteNextDynamicBGMLayer();
+    //            break;
+    //    }
+    //}
 }

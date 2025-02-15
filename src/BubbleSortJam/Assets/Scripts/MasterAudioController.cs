@@ -67,11 +67,6 @@ public class MasterAudioController : MonoBehaviour
         }
     }
 
-    public void PlayBGM()
-    {
-
-    }
-
     private void PlayAllBGM()
     {
         foreach (AudioSource audioSource in GetComponentsInChildren<AudioSource>())
@@ -98,10 +93,10 @@ public class MasterAudioController : MonoBehaviour
         }
     }
 
-    public void UnmuteNextDynamicBGMLayer()
-    {
-        if (currentLayer < audioSources.Length)
-            audioSources[currentLayer++].mute = false;
-    }
+    //public void UnmuteNextDynamicBGMLayer()
+    //{
+    //    if (currentLayer < audioSources.Length)
+    //        audioSources[currentLayer++].mute = false;
+    //}
 
 }
