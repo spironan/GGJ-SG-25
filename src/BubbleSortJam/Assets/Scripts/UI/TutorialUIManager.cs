@@ -8,9 +8,14 @@ public class TutorialUIManager : MonoBehaviour
 
     private List<TutorialUI> tutorials = new List<TutorialUI>();
 
+    public bool HasTutorial(int levelIndex)
+    {
+        return levelIndex >= 0 && levelIndex < tutorialData.Count;
+    }
+
     public TutorialUI TryCreateTutorialUI(int levelIndex, Bounds levelBounds)
     {
-        if(levelIndex < 0 || levelIndex >= tutorialData.Count)
+        if (!HasTutorial(levelIndex))
         {
             return null;
         }

@@ -101,6 +101,7 @@ MonoBehaviour:
   - message: TAP THE RIGHT ONE
   - message: JUST KEEP TAPPING
   - message: CAN YOU DO IT?
+  - message: GOOD LUCK!
 --- !u!1001 &4867734931137403846
 PrefabInstance:
   m_ObjectHideFlags: 0

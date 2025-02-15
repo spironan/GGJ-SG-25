@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 [System.Serializable]
@@ -307,7 +308,7 @@ public class GameManager : MonoBehaviour
     {
         //Debug.Log("camera proj matrix\n" + Camera.main.projectionMatrix);
 
-        if ( (!hasStartedGame || hasEndedGame)  && Input.GetKeyDown(KeyCode.Escape))
+        if ( (!hasStartedGame || hasEndedGame)  && Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
         {
             Application.Quit();
         }
