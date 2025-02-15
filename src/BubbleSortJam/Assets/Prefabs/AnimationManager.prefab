@@ -97,11 +97,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tutorialUIPrefab: {fileID: 5537654837490632972, guid: 3987de2fc8902c246a4e01dc9f8ab771, type: 3}
   tutorialData:
-  - message: LOOK CLOSELY
+  - message: LISTEN CAREFULLY
+    isTutorial: 1
   - message: TAP THE RIGHT ONE
+    isTutorial: 1
   - message: JUST KEEP TAPPING
+    isTutorial: 1
   - message: CAN YOU DO IT?
+    isTutorial: 1
   - message: GOOD LUCK!
+    isTutorial: 0
+  - message: LOOK CLOSELY
+    isTutorial: 0
+  - message: YOU CAN FINISH EARLY
+    isTutorial: 0
+  - message: EACH ROW GIVES YOU MORE LIFE & MUSIC
+    isTutorial: 0
+  - message: THE THEME FOR THIS GAME JAM WAS "BUBBLES"
+    isTutorial: 0
+  - message: .........................................STOP GETTING DISTRACTED AND
+      FOCUS UP..................................... BET YOU FORGOT ABOUT THIS ONE...
+    isTutorial: 0
+  - message: YOU NOW KNOW HOW BUBBLE SORT WORKS
+    isTutorial: 0
 --- !u!1001 &4867734931137403846
 PrefabInstance:
   m_ObjectHideFlags: 0

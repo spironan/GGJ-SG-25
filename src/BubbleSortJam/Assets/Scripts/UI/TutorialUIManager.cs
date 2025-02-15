@@ -10,12 +10,12 @@ public class TutorialUIManager : MonoBehaviour
 
     public bool HasTutorial(int levelIndex)
     {
-        return levelIndex >= 0 && levelIndex < tutorialData.Count;
+        return levelIndex >= 0 && levelIndex < tutorialData.Count && tutorialData[levelIndex].IsTutorial;
     }
 
-    public TutorialUI TryCreateTutorialUI(int levelIndex, Bounds levelBounds)
+    public TutorialUI TryCreateMessage(int levelIndex, Bounds levelBounds)
     {
-        if (!HasTutorial(levelIndex))
+        if (levelIndex < 0 && levelIndex >= tutorialData.Count)
         {
             return null;
         }
@@ -36,5 +36,7 @@ public class TutorialUIManager : MonoBehaviour
 public class TutorialData
 {
     [SerializeField] private string message;
+    [SerializeField] private bool isTutorial = false;
     public string Message { get { return message; } }
+    public bool IsTutorial { get { return isTutorial; } }
 }

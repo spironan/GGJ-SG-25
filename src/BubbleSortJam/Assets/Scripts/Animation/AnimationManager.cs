@@ -202,15 +202,15 @@ public class AnimationManager : MonoBehaviour
         Vector2 boundsCenter = new Vector2(arrayAnimator.transform.position.x - (GridSlotSize.x / 2.0f) + (boundsSize.x / 2.0f), arrayAnimator.transform.position.y);
         Bounds bounds = new Bounds(boundsCenter, boundsSize);
 
-        tutorialManager.TryCreateTutorialUI(levelIndex, bounds);
-        bool hasNextTutorial = tutorialManager.HasTutorial(levelIndex + 1);
-        if (isInTutorial != hasNextTutorial)
+        tutorialManager.TryCreateMessage(levelIndex, bounds);
+        bool isTutorial = tutorialManager.HasTutorial(levelIndex);
+        if (isInTutorial != isTutorial)
         {
-            if (!hasNextTutorial)
+            if (!isTutorial)
             {
                 MasterAudioController.instance.OnFullGameStart();
             }
-            isInTutorial = hasNextTutorial;
+            isInTutorial = isTutorial;
         }
     }
 
