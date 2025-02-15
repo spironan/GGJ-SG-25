@@ -9,7 +9,7 @@ public class PlayerInputManagerExt : MonoBehaviour
     public static PlayerInputManagerExt Instance { get { return instance; } }
 
     private PlayerInput playerInput;
-    private ControlSchemeType currentControlScheme = ControlSchemeType.Invalid;
+    private static ControlSchemeType currentControlScheme = ControlSchemeType.Invalid;
     private List<IControlSchemeChangeListener> controlSchemeChangeListeners = new List<IControlSchemeChangeListener>();
 
     private void Awake()
@@ -24,7 +24,7 @@ public class PlayerInputManagerExt : MonoBehaviour
         }
 
         playerInput = GetComponent<PlayerInput>();
-        UpdateCurrentControlSchemeType();
+        InitializeCurrentControlSchemeType();
     }
 
     public string GetInputActionString(string actionName)
@@ -43,10 +43,18 @@ public class PlayerInputManagerExt : MonoBehaviour
 
         switch(currentControlScheme)
         {
+            case ControlSchemeType.Invalid:
+                return "Press (UNDEFINED)";
             case ControlSchemeType.Touch:
                 return "Tap Anywhere";
-            default:
+            case ControlSchemeType.Mouse:
+                return "Click Anywhere";
+            case ControlSchemeType.Gamepad:
                 return "Press (" + inputAction.GetBindingDisplayString() + ")";
+            case ControlSchemeType.Keyboard:
+                return "Press <" + inputAction.GetBindingDisplayString() + ">";
+            default:
+                return "Press (UNDEFINED)";
         }
     }
 
@@ -61,6 +69,30 @@ public class PlayerInputManagerExt : MonoBehaviour
         controlSchemeChangeListeners.Remove(listener);
     }
 
+    private void InitializeCurrentControlSchemeType()
+    {
+        if(currentControlScheme == ControlSchemeType.Invalid)
+        {
+            // first time, set based on this preference, Gamepad, Touchscreen, Keyboard & Mouse
+            InputDevice activeDevice = GetActiveInputDevice();
+            if(activeDevice != null)
+            {
+                playerInput.SwitchCurrentControlScheme(activeDevice);
+            }
+        }
+        else
+        {
+            // already set in previous scene, attempt to switch to that
+            InputDevice currentDevice = GetInputDeviceFromControlSchemeType(currentControlScheme);
+            if(currentDevice != null)
+            {
+                playerInput.SwitchCurrentControlScheme(currentDevice);
+            }
+        }
+
+        UpdateCurrentControlSchemeType();
+    }
+
     // called on PlayerInput ControlsChanged Event
     public void UpdateCurrentControlSchemeType()
     {
@@ -68,7 +100,9 @@ public class PlayerInputManagerExt : MonoBehaviour
         {
             return;
         }
+        Debug.Log(playerInput.currentControlScheme);
         currentControlScheme = ConvertControlSchemeType(playerInput.currentControlScheme);
+
         foreach(IControlSchemeChangeListener listener in controlSchemeChangeListeners)
         {
             listener.OnControlSchemeChanged();
@@ -77,13 +111,17 @@ public class PlayerInputManagerExt : MonoBehaviour
 
     private ControlSchemeType ConvertControlSchemeType(string currentControlScheme)
     {
-        if(currentControlScheme == "Keyboard&Mouse")
-        {
-            return ControlSchemeType.KeyboardMouse;
-        }
-        else if(currentControlScheme == "Gamepad")
+        if (currentControlScheme == "Gamepad")
         {
             return ControlSchemeType.Gamepad;
+        }
+        else if(currentControlScheme == "Keyboard")
+        {
+            return ControlSchemeType.Keyboard;
+        }
+        else if(currentControlScheme == "Mouse")
+        {
+            return ControlSchemeType.Mouse;
         }
         else if(currentControlScheme == "Touch")
         {
@@ -92,10 +130,49 @@ public class PlayerInputManagerExt : MonoBehaviour
         return ControlSchemeType.Invalid;
     }
 
+    private InputDevice GetActiveInputDevice()
+    {
+        if (Gamepad.current != null)
+        {
+            return Gamepad.current;
+        }
+        else if (Touchscreen.current != null)
+        {
+            return Touchscreen.current;
+        }
+        else if (Keyboard.current != null)
+        {
+            return Keyboard.current;
+        }
+        else if (Mouse.current != null)
+        {
+            return Mouse.current;
+        }
+        return null;
+    }
+
+    private InputDevice GetInputDeviceFromControlSchemeType(ControlSchemeType type)
+    {
+        switch(type)
+        {
+            case ControlSchemeType.Gamepad:
+                return Gamepad.current;
+            case ControlSchemeType.Touch:
+                return Touchscreen.current;
+            case ControlSchemeType.Keyboard:
+                return Keyboard.current;
+            case ControlSchemeType.Mouse:
+                return Mouse.current;
+            default:
+                return null;
+        }
+    }
+
     private enum ControlSchemeType
     {
         Invalid,
-        KeyboardMouse,
+        Keyboard,
+        Mouse,
         Gamepad,
         Touch
     }

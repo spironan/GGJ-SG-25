@@ -960,10 +960,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: AnimationManager
       objectReference: {fileID: 0}
-    - target: {fileID: 3790407234632751787, guid: 511c231dd39fd66419de86bb3a20faef, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

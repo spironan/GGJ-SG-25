@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEditor;
 
 public class AnimationManager : MonoBehaviour
 {
@@ -10,8 +11,11 @@ public class AnimationManager : MonoBehaviour
     [SerializeField] private Vector2 GridSlotSize;
     [SerializeField] private float GameplayBPM;
 
-    [Header("Player")]
+    [Header("Other Managers")]
     [SerializeField] private PlayerAnimator player;
+    [SerializeField] private TutorialUIManager tutorialManager;
+
+    private bool isInTutorial = true;
 
     public PlayerAnimator Player { get { return player; } }
 
@@ -77,6 +81,7 @@ public class AnimationManager : MonoBehaviour
 
     private void OnGameStart(BaseGameplayEvent baseEvent)
     {
+        TryShowTutorial(0);
     }
 
     private void OnGameEnd(BaseGameplayEvent baseEvent)
@@ -135,7 +140,10 @@ public class AnimationManager : MonoBehaviour
         }
 
         Player.QueueAnimation(PlayerAnimationPresetType.MoveNextStart);
-        Player.QueueAnimation(PlayerAnimationPresetType.MoveNextEnd);
+        Player.QueueAnimation(PlayerAnimationPresetType.MoveNextEnd, () =>
+        {
+            TryShowTutorial(usableEvent.StageIndex + 1);
+        });
     }
 
     private void OnBPMChanged(BaseGameplayEvent baseEvent)
@@ -184,6 +192,31 @@ public class AnimationManager : MonoBehaviour
         NumberArrayAnimator arrayAnimator = numberArrays[usableEvent.StageIndex];
         NumberElementAnimator numberAnimator = arrayAnimator.FindElement(usableEvent.ElementIndex);
         numberAnimator.UpdateState(usableEvent.NewState);
+    }
+
+    private void TryShowTutorial(int levelIndex)
+    {
+        NumberArrayAnimator arrayAnimator = numberArrays[levelIndex];
+
+        Vector2 boundsSize = new Vector2(GridSlotSize.x * arrayAnimator.Count, GridSlotSize.y);
+        Vector2 boundsCenter = new Vector2(arrayAnimator.transform.position.x - (GridSlotSize.x / 2.0f) + (boundsSize.x / 2.0f), arrayAnimator.transform.position.y);
+        Bounds bounds = new Bounds(boundsCenter, boundsSize);
+
+        bool hasTutorial = tutorialManager.TryCreateTutorialUI(levelIndex, bounds);
+        if (isInTutorial != hasTutorial)
+        {
+            if (!hasTutorial)
+            {
+                MasterAudioController.instance.OnFullGameStart();
+            }
+            isInTutorial = hasTutorial;
+        }
+        Debug.Log("Try ShowTutorial: " + levelIndex + "(" + hasTutorial + ")");
+    }
+
+    public Vector2 GetGridSlotSize()
+    {
+        return GridSlotSize;
     }
 }
 

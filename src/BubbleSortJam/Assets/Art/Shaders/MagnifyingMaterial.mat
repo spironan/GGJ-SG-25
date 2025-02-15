@@ -61,7 +61,7 @@ Material:
     - _LensEdgeSharpness: 0.4
     - _MagnifyDistortion: 0.01
     - _OffsetScale: 16
-    - _Zoom: 0.4
+    - _Zoom: 0
     m_Colors: []
   m_BuildTextureStacks: []
   m_AllowLocking: 1

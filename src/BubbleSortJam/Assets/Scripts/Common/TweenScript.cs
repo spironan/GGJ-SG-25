@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using TMPro;
 
 public class TweenScript : MonoBehaviour
 {
@@ -14,7 +15,7 @@ public class TweenScript : MonoBehaviour
     private SpriteRenderer sr;
     private RectTransform rectTransform;
     private Image image;
-    private Text text;
+    private TextMeshProUGUI text;
     private CanvasGroup canvasGroup;
 
     private Button button;
@@ -24,7 +25,7 @@ public class TweenScript : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
         rectTransform = GetComponent<RectTransform>();
         image = GetComponent<Image>();
-        text = GetComponent<Text>();
+        text = GetComponent<TextMeshProUGUI>();
         canvasGroup = GetComponent<CanvasGroup>();
 
         button = GetComponent<Button>();

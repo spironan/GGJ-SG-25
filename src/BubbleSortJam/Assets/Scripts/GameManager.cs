@@ -174,7 +174,7 @@ public class GameManager : MonoBehaviour
         BpmTracker.instance.OnWindowOpen += OnBeatWindowOpen;
         BpmTracker.instance.OnWindowClose += OnBeatWindowClosed;
 
-        OnTutorialComplete += MasterAudioController.instance.OnFullGameStart;
+        //OnTutorialComplete += MasterAudioController.instance.OnFullGameStart;
 
     }
 
@@ -198,7 +198,7 @@ public class GameManager : MonoBehaviour
         BpmTracker.instance.OnGameStart();
 
         GameStartGameplayEvent.BroadcastEvent();
-        StartIterationGameplayEvent.BroadcastEvent(playData.stageSize - playData.currentIteration + 1);
+        StartIterationGameplayEvent.BroadcastEvent(currentStage, playData.currentIteration - 1, playData.stageSize - playData.currentIteration + 1);
     }
 
     private void OnPlayerDeath()
@@ -284,7 +284,7 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-                StartIterationGameplayEvent.BroadcastEvent(playData.stageSize - playData.currentIteration + 1);
+                StartIterationGameplayEvent.BroadcastEvent(currentStage, playData.currentIteration - 1, playData.stageSize - playData.currentIteration + 1);
                 playData.startBeatsToIgnoreLeft = 3;
             }
         }
@@ -381,7 +381,7 @@ public class GameManager : MonoBehaviour
 
             LoadStage();
             StageCompleteGameplayEvent.BroadcastEvent(currentStage - 1);
-            StartIterationGameplayEvent.BroadcastEvent(playData.stageSize - playData.currentIteration + 1);
+            StartIterationGameplayEvent.BroadcastEvent(currentStage, playData.currentIteration - 1, playData.stageSize - playData.currentIteration + 1);
         }
 
         Debug.Log("Current Stage is now " + currentStage);

@@ -101,12 +101,19 @@ public class GameEndGameplayEvent : BaseGameplayEvent
 
 public class StartIterationGameplayEvent : BaseGameplayEvent
 {
+    private int levelIndex = 0;
+    private int sortedCount = 0;
     private int unsortedCount = 0;
+
+    public int LevelIndex { get { return levelIndex; } }
+    public int SortedCount { get { return sortedCount; } }
     public int UnsortedCount { get { return unsortedCount; } }
 
-    public static void BroadcastEvent(int unsortedCount)
+    public static void BroadcastEvent(int levelIndex, int sortedCount, int unsortedCount)
     {
         StartIterationGameplayEvent ev = new StartIterationGameplayEvent();
+        ev.levelIndex = levelIndex;
+        ev.sortedCount = sortedCount;
         ev.unsortedCount = unsortedCount;
         GameplayEventManager.BroadcastEvent(ev);
     }

@@ -7,6 +7,8 @@ public class NumberArrayAnimator : MonoBehaviour
 
     private List<NumberElementAnimator> elements = new List<NumberElementAnimator>();
 
+    public int Count { get { return elements.Count; } }
+
     public void Initialize(List<int> values, float spacing)
     {
         foreach(int value in values)

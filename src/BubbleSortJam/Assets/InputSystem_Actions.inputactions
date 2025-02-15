@@ -27,7 +27,7 @@
                     "name": "Attack",
                     "type": "Button",
                     "id": "6c2ab1b8-8984-453a-af3d-a3c78ae1679a",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -488,7 +488,7 @@
                     "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Keyboard&Mouse",
+                    "groups": ";Keyboard",
                     "action": "Swap",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -507,10 +507,10 @@
                 {
                     "name": "",
                     "id": "02f45de9-182d-4808-ae36-042ee161c022",
-                    "path": "<Touchscreen>/Press",
+                    "path": "<Pointer>/press",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Touch",
+                    "groups": ";Touch;Mouse",
                     "action": "Swap",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -1038,18 +1038,7 @@
         {
             "name": "Keyboard&Mouse",
             "bindingGroup": "Keyboard&Mouse",
-            "devices": [
-                {
-                    "devicePath": "<Keyboard>",
-                    "isOptional": false,
-                    "isOR": false
-                },
-                {
-                    "devicePath": "<Mouse>",
-                    "isOptional": false,
-                    "isOR": false
-                }
-            ]
+            "devices": []
         },
         {
             "name": "Gamepad",
@@ -1090,6 +1079,28 @@
             "devices": [
                 {
                     "devicePath": "<XRController>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        },
+        {
+            "name": "Keyboard",
+            "bindingGroup": "Keyboard",
+            "devices": [
+                {
+                    "devicePath": "<Keyboard>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        },
+        {
+            "name": "Mouse",
+            "bindingGroup": "Mouse",
+            "devices": [
+                {
+                    "devicePath": "<Mouse>",
                     "isOptional": false,
                     "isOR": false
                 }
